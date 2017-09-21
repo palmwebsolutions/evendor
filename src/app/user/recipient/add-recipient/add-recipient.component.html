@@ -1,0 +1,27 @@
+<form action="">
+    <div class="form-group">
+      <label for="name">Recipient name</label>
+      <input type="text" name="name"  class="form-control" placeholder="" >
+    </div>
+    <div class="form-group">
+      <label for="name">Recipient email</label>
+      <input type="text" name="email"  class="form-control" placeholder="" >
+    </div>
+    <div class="form-group">
+      <label for="name">Recipient phone</label>
+      <input type="text" name="phone"  class="form-control" placeholder="" >
+    </div>
+    <div class="form-group">
+      <label for="vendor">Choose vendor order</label>
+      <select class="form-control" name="vendor" aria-describedby="helpId">
+        <option *ngFor="let vendor of vendors">{{vendor.name}}</option>
+        <option>All vendors orders</option>
+      </select>
+      <small id="helpId" class="form-text text-muted">Help text</small>
+    </div>
+    <div class="form-group">
+      <div>
+        <button type="button" class="btn btn-link" (click)="addRecipient()">Save</button>
+      </div>
+    </div>
+  </form>

@@ -1,0 +1,17 @@
+<div class="container">
+  <div class="row">
+   
+    <div class="col-md-6 col-sm-8">
+        <h4>Add new vendor</h4> 
+      <add-vendor (add)="addVendor($event)" [vendorName]="vendorName"></add-vendor>
+      <hr>
+      <h4>Vendors list</h4>
+    <div *ngIf="vendors">
+        <div *ngFor="let vendor of vendors; index as i">
+            <show-vendor [vendor]="vendor" (save)="saveVendor($event, i)" (remove)="removeVendor($event, i)"></show-vendor>
+        </div>
+    </div>
+    </div>
+  </div>
+  
+</div>

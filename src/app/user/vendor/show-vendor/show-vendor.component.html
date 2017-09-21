@@ -1,0 +1,18 @@
+
+
+<div class="card">
+  <div class="card-block">
+    <h4 class="card-title">{{vendor.name}}</h4>
+    <button type="button" class="btn btn-link btn-sm" (click)="editVendor = true">Edit</button>
+    <button type="button" class="btn btn-link btn-sm" (click)="removeVendor(vendor)">Remove</button>
+    <div *ngIf="editVendor">
+      <div class="form-inline">
+        <input class="form-control" type="text" [(ngModel)]="vendor.name"> 
+        <button type="button" class="btn btn-link" (click)="editVendor = false">Save</button>
+      </div>
+      
+    </div>
+  </div> 
+</div>
+
+
