@@ -1,0 +1,10 @@
+.nav-custom{
+    height : 100vh;
+    background-color: #f9f9f9;
+}
+.nav-link{
+    padding: 1em 1em;
+}
+li{
+    border-bottom: 2px solid #F5F5F5;
+}

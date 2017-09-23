@@ -1,0 +1,14 @@
+form{
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+.btn-cust{
+    border: 1px solid #81DCEF;
+    background: white;
+    color: #1C79A9;
+    padding:  5px 10px 5px 10px;
+}
+.btn-cust:active{
+    background:#9ECFE9;
+    color: white;
+}
