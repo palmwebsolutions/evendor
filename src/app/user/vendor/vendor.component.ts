@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
+
 import { vendorService } from '../shared/vendorService';
 import { Vendor } from '../shared/vendor';
 
@@ -21,9 +22,18 @@ export class VendorComponent implements OnInit {
     this.service.setVendors(vendorName);
   }
 
-  removeVendor(vendor: Vendor, i: number){
-    if(i > -1){
-      this.vendors.splice(i, 1);
+  removeVendor(index: number){
+    if(index > -1){
+      this.vendors.splice(index, 1);
+      //save to Db
+    }
+  }
+
+  saveVendor(index: number){
+    if(index > -1){
+      console.log(this.vendors[index]);
+      console.log(index);
+      //save to Db
     }
   }
 }

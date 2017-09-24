@@ -5,3 +5,7 @@ export * from './locations/locations.component';
 export * from './account/account.component';
 export * from './order-history/order-history.component';
 export * from './recipient/recipient.component';
+export * from './shared/vendorService';
+export * from './shared/vendor';
+export * from './shared/recipientService';
+export * from './shared/recipient';

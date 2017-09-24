@@ -1,8 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 
-import { vendorService } from '../../shared/vendorService';
-import { Vendor } from '../../shared/vendor';
-
 
 @Component({
   selector: 'show-vendor',
@@ -12,16 +9,25 @@ import { Vendor } from '../../shared/vendor';
 })
 export class ShowVendorComponent implements OnInit {
   public showAddVendor: boolean;
-  constructor(private service: vendorService) { }
+  constructor() { }
 
   ngOnInit() {
   }
 
+  public editVendor: boolean = false;
+
   @Output()
   remove: EventEmitter<object> = new EventEmitter();
 
-  removeVendor(vendor: Vendor){
-    this.remove.emit(vendor);
-    console.log(vendor)
+  removeVendor(){
+    this.remove.emit();
+  }
+
+  @Output()
+  save: EventEmitter<object> = new EventEmitter();
+
+  saveVendor(){
+    this.save.emit();
+    this.editVendor = false;
   }
 }

@@ -8,7 +8,7 @@
       <h4>Vendors list</h4>
     <div *ngIf="vendors">
         <div *ngFor="let vendor of vendors; index as i">
-            <show-vendor [vendor]="vendor" (save)="saveVendor($event, i)" (remove)="removeVendor($event, i)"></show-vendor>
+            <show-vendor [vendor]="vendor" (save)="saveVendor(i)" (remove)="removeVendor(i)"></show-vendor>
         </div>
     </div>
     </div>

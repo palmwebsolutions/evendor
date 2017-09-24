@@ -1,57 +1,17 @@
 <div class="container">
   <div class="row">
     <div class="col-md-6 col-sm-8">
-      <add-recipient></add-recipient>
+      <button type="button" class="btn btn-link" (click)="showAddRecipient=true">Add new recipient</button>
+      <div *ngIf="true">
+        <add-recipient [vendors]="vendors" (save)="saveRecipient($event)"></add-recipient>
+      </div>
+      <hr>
+      <div>
+        <show-recipient *ngFor="let recipient of recipients; let i=index" [recipient]="recipient" [vendors]="vendors" (remove)="removeRecipient(i)" (save)="saveRecipient(i)"></show-recipient>
+      </div>
     </div>
   </div>
 </div>
 
 
 
-
-
-
-
-
-<!--<div class="container">
-    <div class="row">
-      <div class="col-md-6 col-sm-8">
-        <button class="btn-link" (click)="showAddRecepient=true">Add recepient</button>
-  
-  
-        <form name="newVendor">
-          <div class="form-group">
-            <label class="control-label" for="vendor">Vendor </label><span class="text-muted font-italic font-weight-normal"> / Required</span>
-            <div>
-              <input class="form-control" type="text" name="vendor" required />
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="control-label" for="name">Sales person name</label><span class="text-warning font-italic font-weight-normal"> / Required</span>
-            <div>
-              <input class="form-control" type="text" name="name" required />
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="control-label" for="email">Email</label><span class="text-danger font-weight-normal font-italic"> / Required</span>
-            <div>
-              <input class="form-control" type="text" name="email" required />
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="control-label" for="phone">Phone</label>
-            <div>
-              <input class="form-control" type="text" name="phone" />
-            </div>
-          </div>
-          <div class="form-group">
-            <div>
-              <button type="button" class="btn btn-default" ng-disabled="!(newVendor.name.$valid && newVendor.vendor.$valid && newVendor.email.$valid)"
-                ng-click="addVendor()" title="Fill out required fields">Add vendor</button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>-->
-  
