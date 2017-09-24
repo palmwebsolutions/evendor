@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { vendorService } from './user/shared/vendorService';
+import { RecipientService } from './user/shared/recipientService';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -25,7 +26,7 @@ import { UserModule } from './user/user.module';
     AppRoutingModule,
     UserModule
   ],
-  providers: [vendorService],
+  providers: [vendorService, RecipientService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
