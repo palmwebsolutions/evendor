@@ -1,13 +1,14 @@
 <div class="container">
   <div class="row">
     <div class="col-md-6 col-sm-8">
-      <button type="button" class="btn btn-link" (click)="showAddRecipient=true">Add new recipient</button>
-      <div *ngIf="true">
+      <h4>Add new recipient</h4>
+      
         <add-recipient [vendors]="vendors" (save)="saveRecipient($event)"></add-recipient>
-      </div>
+      
       <hr>
+      <h4>Recipients</h4>
       <div>
-        <show-recipient *ngFor="let recipient of recipients; let i=index" [recipient]="recipient" [vendors]="vendors" (remove)="removeRecipient(i)" (save)="saveRecipient(i)"></show-recipient>
+        <show-recipient *ngFor="let recipient of recipients; let i=index" [recipient]="recipient" [vendors]="vendors" (remove)="removeRecipient(i)" (save)="saveRecipient($event)"></show-recipient>
       </div>
     </div>
   </div>

@@ -5,6 +5,7 @@ import { HttpModule } from '@angular/http';
 
 import { vendorService } from './user/shared/vendorService';
 import { RecipientService } from './user/shared/recipientService';
+import { OnCreate } from './user/shared/checkboxDirective';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -17,7 +18,8 @@ import { UserModule } from './user/user.module';
   declarations: [
     AppComponent,
     HomeComponent,
-    UserComponent
+    UserComponent,
+    OnCreate
   ],
   imports: [
     BrowserModule,
