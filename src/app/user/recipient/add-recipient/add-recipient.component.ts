@@ -18,10 +18,9 @@ export class AddRecipientComponent implements OnInit {
     
   }
   
-public NewRecipient: Recipient;
 
-  //public recipient = {name: "", email: "", phone: "", vendor: 9999};
   public recipient: Recipient;
+
   
 
   @Output()
@@ -34,7 +33,8 @@ public NewRecipient: Recipient;
       }
     }
     this.recipient = new Recipient(form.value.name, form.value.email, form.value.phone, newVendors, 0); 
-     this.save.emit(this.recipient);
+    let data = {recipient: this.recipient, add: true};
+    this.save.emit(data);
     
   }
    

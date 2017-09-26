@@ -1,10 +1,12 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output, Directive } from '@angular/core';
+
+import {Vendor} from '../../shared/vendor'
 
 @Component({
   selector: 'show-recipient',
   templateUrl: './show-recipient.component.html',
   styleUrls: ['./show-recipient.component.css'],
-  inputs: ['recipient', 'vendors']
+  inputs: ['recipient', 'vendors', 'smallForm']
 })
 export class ShowRecipientComponent implements OnInit {
 
@@ -13,7 +15,9 @@ export class ShowRecipientComponent implements OnInit {
   ngOnInit() {
   }
 
-  public editRecipient: boolean = true;
+  public editRecipient: boolean = false;
+  public smallForm: boolean;
+  public flag: boolean[] = [];
 
   @Output()
   remove: EventEmitter<object> = new EventEmitter();
@@ -22,19 +26,36 @@ export class ShowRecipientComponent implements OnInit {
     this.remove.emit();
   }
 
+
   @Output()
   save: EventEmitter<object> = new EventEmitter();
 
-  saveRecipient(){
-    this.save.emit();
+  saveRecipient(recipient){
+    let data = {recipient: recipient, add: false};
+    this.save.emit(data);
     this.editRecipient = false;
   }
   
-  dosome(e){
-    console.log(e.vendor[0])
+
+  updateVendor(recipient, vendor, checkbox){
+    if(checkbox.checked == true){
+      recipient.vendor.push(new Vendor(vendor.name, vendor.id))
+    }else{
+      for(let v = 0; v < recipient.vendor.length; v++){
+        if(recipient.vendor[v]['id'] == vendor.id){
+          recipient.vendor.splice(v, 1);
+        }
+      }
+    }
   }
 
-  changeVendor(e){
-    console.log(e)
+  getFlag(recipient, vendor, index){
+    for(let v = 0; v < recipient.vendor.length; v++){
+      if(recipient.vendor[v]['id'] == vendor.id){
+        this.flag[index] = true;
+      }
+    }
+    return true;
   }
+  
 }

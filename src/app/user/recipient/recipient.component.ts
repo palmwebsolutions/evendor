@@ -27,9 +27,12 @@ export class RecipientComponent implements OnInit {
     this.recipients.splice(index, 1);
   }
 
-  saveRecipient(recipient, index){
-    
-      this.recipients.push(recipient)
+  saveRecipient(data){
+    if(data.add == true){
+      this.recipients.push(data.recipient)
+    }
+    console.log('added to Db', data)
+    //save to DB
   }
 }
 
