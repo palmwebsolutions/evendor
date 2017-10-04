@@ -8,36 +8,48 @@ import { Vendor } from '../../shared/vendor';
   selector: 'add-recipient',
   templateUrl: './add-recipient.component.html',
   styleUrls: ['./add-recipient.component.css'],
-  inputs: ['vendors']
+  inputs: ['vendors', 'recipient', 'flag']
 })
 export class AddRecipientComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
-    
-  }
+  ngOnInit() {}
   
 
   public recipient: Recipient;
-
+  public vendors: Vendor[];
+  public flag;
   
 
   @Output()
   save: EventEmitter<object> = new EventEmitter();
-  addRecipient(form: NgForm, vendors: Vendor[]){
-    let newVendors: Vendor[] = [];
-    for (var v=0; v < vendors.length; v++) {
-      if (form.value[vendors[v]['name']] == true) {
-        newVendors.push(new Vendor(vendors[v]['name'], vendors[v]['id']))
+  saveRecipient(){
+    let vendors = [];
+    let count: number = 0;
+    for (var i = 0; i < this.vendors.length; i++) {
+      if(this.flag[i]==true){
+        vendors.push(new Vendor(this.vendors[i]['name'], this.vendors[i]['id']));
       }
+      
     }
-    this.recipient = new Recipient(form.value.name, form.value.email, form.value.phone, newVendors, 0); 
-    let data = {recipient: this.recipient, add: true};
-    this.save.emit(data);
-    
+    this.recipient.vendor = vendors;
+    this.save.emit(this.recipient);
+    this.recipient = new Recipient("","","",[]);
   }
-   
+  
+
+  @Output()
+  cancel: EventEmitter<null> = new EventEmitter();
+  cancelEdit(){
+    console.log(this.recipient)
+    this.recipient = new Recipient("","","",[]);
+    console.log(this.recipient)
+    this.flag = [];
+    this.cancel.emit();
+  }
+
+  
     
   }
 

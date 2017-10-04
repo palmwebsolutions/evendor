@@ -12,7 +12,9 @@ import { Vendor } from './vendor';
 ] */
 
 let recipients = [
-    new Recipient('Kip', 'kip@gmail.com', '(561)2341234', [new Vendor('CBI', 2)], 1)
+    new Recipient('Kip', 'kip@gmail.com', '(561)2341234', [new Vendor('CBI', 2)], 1),
+    new Recipient('Doug', 'doug@roma.com', '(216)1234561', [{name: 'Roma', id: 1}], 2),
+    new Recipient('Steve', 'steve@sysco.com', '', [{name: 'Sysco', id: 3}], 3)
 
 ]
 

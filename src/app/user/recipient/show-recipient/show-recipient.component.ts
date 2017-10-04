@@ -15,7 +15,6 @@ export class ShowRecipientComponent implements OnInit {
   ngOnInit() {
   }
 
-  public editRecipient: boolean = false;
   public smallForm: boolean;
   public flag: boolean[] = [];
 
@@ -26,36 +25,12 @@ export class ShowRecipientComponent implements OnInit {
     this.remove.emit();
   }
 
-
   @Output()
-  save: EventEmitter<object> = new EventEmitter();
-
-  saveRecipient(recipient){
-    let data = {recipient: recipient, add: false};
-    this.save.emit(data);
-    this.editRecipient = false;
-  }
-  
-
-  updateVendor(recipient, vendor, checkbox){
-    if(checkbox.checked == true){
-      recipient.vendor.push(new Vendor(vendor.name, vendor.id))
-    }else{
-      for(let v = 0; v < recipient.vendor.length; v++){
-        if(recipient.vendor[v]['id'] == vendor.id){
-          recipient.vendor.splice(v, 1);
-        }
-      }
-    }
+  edit: EventEmitter<object> = new EventEmitter();
+  editRecipient(){
+    this.edit.emit();
   }
 
-  getFlag(recipient, vendor, index){
-    for(let v = 0; v < recipient.vendor.length; v++){
-      if(recipient.vendor[v]['id'] == vendor.id){
-        this.flag[index] = true;
-      }
-    }
-    return true;
-  }
+
   
 }
