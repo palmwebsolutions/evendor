@@ -1,0 +1,21 @@
+.card-header{
+    padding-top: .30rem;
+    padding-bottom: .30rem;
+}
+
+.card-block{
+    padding-right: .30rem;
+    padding-left: .30rem;
+}
+
+table tr:last-child{
+    border-bottom: solid 1px rgb(192, 191, 191);
+}
+table{
+    table-layout: fixed;
+}
+
+.table td{
+    padding: .30rem;
+    border-top: solid 1px rgb(192, 191, 191);
+}

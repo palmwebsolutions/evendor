@@ -1,11 +1,16 @@
-<div class="container-fluid">
+
   <div class="row">
-    <div class="col-m-6">
-      <main-list></main-list>
+    <div class="col-sm-6">
+      <main-list 
+            (getFamilyItems)="getFamilyItems($event)"
+            (addToList)="addToList($event)"
+            [allItems]="allItems" 
+            [vendors]="vendors">
+      </main-list>
       <custom-item></custom-item>
     </div>
-    <div class="col-m-6">
-      <new-list></new-list>
+    <div class="col-sm-6">
+      <new-list [newItemsList]="newItemsList"></new-list>
     </div>
   </div>
-</div>
+

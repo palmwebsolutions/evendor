@@ -2,9 +2,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 
 import { vendorService } from './user/shared/vendorService';
 import { RecipientService } from './user/shared/recipientService';
+import { ItemService } from './user/shared/itemService';
 import { OnCreate } from './user/shared/checkboxDirective';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -25,10 +27,11 @@ import { UserModule } from './user/user.module';
     BrowserModule,
     FormsModule,
     HttpModule,
+    HttpClientModule,
     AppRoutingModule,
     UserModule
   ],
-  providers: [vendorService, RecipientService],
+  providers: [vendorService, RecipientService, ItemService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
