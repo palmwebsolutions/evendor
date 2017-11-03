@@ -8,7 +8,9 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
   inputs: ['vendor']
 })
 export class ShowVendorComponent implements OnInit {
-  public showAddVendor: boolean;
+
+  public vendor;
+  
   constructor() { }
 
   ngOnInit() {
@@ -17,17 +19,17 @@ export class ShowVendorComponent implements OnInit {
   public editVendor: boolean = false;
 
   @Output()
-  remove: EventEmitter<object> = new EventEmitter();
+  remove: EventEmitter<number> = new EventEmitter();
 
-  removeVendor(){
-    this.remove.emit();
+  removeVendor(id){
+    this.remove.emit(id);
   }
 
   @Output()
   save: EventEmitter<object> = new EventEmitter();
 
   saveVendor(){
-    this.save.emit();
+    this.save.emit({name: this.vendor.name, id: this.vendor.id});
     this.editVendor = false;
   }
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 
-//import { family } from '../../shared/family';
+import { ItemService } from '../../shared/itemService';
+import { CRUD } from '../../shared/crud';
 
 @Component({
   selector: 'main-list',
@@ -8,25 +9,32 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
   styleUrls: ['./main-list.component.css'],
   inputs: ['allItems', 'vendors']
 })
+
 export class MainListComponent implements OnInit {
+
   public allItems = this.allItems;
+  private url='http://localhost/evendorAPI/itemservice.php';
   
-  constructor() { }
+  constructor(private itemService: ItemService, private crud: CRUD) { }
   ngOnInit() {
 
   }
 
-  @Output()
-  getFamilyItems: EventEmitter<object> = new EventEmitter();
   getItems(familyId, index){
-    let data = {familyId: familyId, index: index}
-    this.getFamilyItems.emit(data);
+    this.crud.read(this.url, familyId)
+        .subscribe(
+          result=>{
+            this.allItems[index]['items'] = result;
+          }
+        );
   }
+
 
   @Output()
   addToList: EventEmitter<object> = new EventEmitter();
-  add(familyInd, itemInd, vendorInd){
-    let data = {familyInd: familyInd, itemInd: itemInd, vendorInd: vendorInd};
+  add(familyInd, itemInd, vendorInd, vendorId, itemId){
+    console.log(vendorId)
+    let data = {familyInd: familyInd, itemInd: itemInd, vendorInd: vendorInd, vendorId: vendorId, itemId: itemId};
     this.addToList.emit(data);
   }
 }

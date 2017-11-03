@@ -1,0 +1,16 @@
+.container-fluid{
+    margin: 0;
+    padding: 0;
+}
+
+.btn-login{
+    color: white
+}
+
+.navbar-dark{
+    color: white;
+    background-color: #585252;
+}
+.navbar-brand{
+    padding-left: 100px;
+}

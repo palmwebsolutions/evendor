@@ -26,7 +26,6 @@ export class AddRecipientComponent implements OnInit {
   save: EventEmitter<object> = new EventEmitter();
   saveRecipient(){
     let vendors = [];
-    let count: number = 0;
     for (var i = 0; i < this.vendors.length; i++) {
       if(this.flag[i]==true){
         vendors.push(new Vendor(this.vendors[i]['name'], this.vendors[i]['id']));
@@ -42,10 +41,6 @@ export class AddRecipientComponent implements OnInit {
   @Output()
   cancel: EventEmitter<null> = new EventEmitter();
   cancelEdit(){
-    console.log(this.recipient)
-    this.recipient = new Recipient("","","",[]);
-    console.log(this.recipient)
-    this.flag = [];
     this.cancel.emit();
   }
 

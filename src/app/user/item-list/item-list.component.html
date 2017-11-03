@@ -1,16 +1,24 @@
 
-  <div class="row">
+  <div class="row main">
     <div class="col-sm-6">
       <main-list 
-            (getFamilyItems)="getFamilyItems($event)"
             (addToList)="addToList($event)"
             [allItems]="allItems" 
             [vendors]="vendors">
       </main-list>
-      <custom-item></custom-item>
+      <custom-item [vendors]="vendors" (addCustomItem)="addCustomItem($event)"></custom-item>
     </div>
     <div class="col-sm-6">
-      <new-list [newItemsList]="newItemsList"></new-list>
+      <new-list 
+                [allItems]="allItems"
+                [family]="family" 
+                [modal]="modal"
+                (note)="noteModal($event)"
+                (userList)="userList()"
+                >
+      </new-list>
     </div>
   </div>
 
+
+  <modal [modal]="modal" [note]="note"(saveNote)="saveNote()"></modal>

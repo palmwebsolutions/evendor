@@ -1,5 +1,5 @@
-<div class="container">
-  <div class="row justify-content-center">
+
+  <div class="row justify-content-center main">
     <div class="col-md-6 col-sm-8">
       <div class="text-right add-btn">
          <button type="button" class="btn btn-link" (click)="newRecipient()">Add recipient</button>
@@ -11,7 +11,7 @@
            [vendors]="vendors" 
            [recipient]="recipient"
            [flag]="flag" 
-           (save)="saveRecipient($event, i)" 
+           (save)="saveRecipient($event)" 
            (cancel)="cancel()">
         </add-recipient>
       </div>
@@ -19,18 +19,15 @@
       <h4>Recipients</h4>
       <div>
         <show-recipient 
-            *ngFor="let recipient of recipients; let i=index" 
-            [recipient]="recipient" 
+            [recipients]="recipients" 
             [vendors]="vendors" 
-            (remove)="removeRecipient(i)"
-            (edit)="editRecipient(i)"
-            (save)="saveRecipient()">
+            (remove)="removeRecipient($event)"
+            (edit)="editRecipient($event)">
         </show-recipient>
       </div>
     </div>
   </div>
-  <button type="button" class="btn btn-primary" (click)="sh()">sjjj</button>
-</div>
+
 
 
 

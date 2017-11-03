@@ -1,15 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'custom-item',
   templateUrl: './custom-item.component.html',
-  styleUrls: ['./custom-item.component.css']
+  styleUrls: ['./custom-item.component.css'],
+  inputs: ['vendors']
 })
 export class CustomItemComponent implements OnInit {
 
+  public customItemName = "";
+  public vendorVal = "";
+  
   constructor() { }
 
   ngOnInit() {
   }
 
+  @Output()
+  addCustomItem: EventEmitter<object> = new EventEmitter();
+  add(vendorId){
+    console.log(vendorId, this.customItemName);
+    this.addCustomItem.emit({vendorId:vendorId, vendorInd: this.vendorVal, customItemName: this.customItemName});
+    this.customItemName = "";
+    this.vendorVal = "";
+  }
 }

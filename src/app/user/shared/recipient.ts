@@ -6,6 +6,7 @@ export class Recipient{
         public email: string,
         public phone: string,
         public vendor: Vendor[], 
-        private id?: number
+        private id?: number,
+        private index?: number
     ){}
 }

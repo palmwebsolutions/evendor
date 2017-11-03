@@ -9,6 +9,7 @@ import { AddRecipientComponent, ShowRecipientComponent } from './recipient/index
 import { MainListComponent } from './item-list/main-list/main-list.component';
 import { NewListComponent } from './item-list/new-list/new-list.component';
 import { CustomItemComponent } from './item-list/custom-item/custom-item.component';
+import { ModalComponent } from '../modal/modal.component';
 
 
 
@@ -18,6 +19,6 @@ import { CustomItemComponent } from './item-list/custom-item/custom-item.compone
     UserRoutingModule,
     FormsModule
   ],
-  declarations: [VendorComponent, ItemListComponent, NewOrderComponent, LocationsComponent, AccountComponent, OrderHistoryComponent, AddVendorComponent, ShowVendorComponent, RecipientComponent, AddRecipientComponent, ShowRecipientComponent, MainListComponent, NewListComponent, CustomItemComponent ]
+  declarations: [VendorComponent, ItemListComponent, NewOrderComponent, LocationsComponent, AccountComponent, OrderHistoryComponent, AddVendorComponent, ShowVendorComponent, RecipientComponent, AddRecipientComponent, ShowRecipientComponent, MainListComponent, NewListComponent, CustomItemComponent, ModalComponent ]
 })
 export class UserModule { }

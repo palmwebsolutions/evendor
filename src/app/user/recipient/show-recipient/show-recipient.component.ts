@@ -6,7 +6,7 @@ import {Vendor} from '../../shared/vendor'
   selector: 'show-recipient',
   templateUrl: './show-recipient.component.html',
   styleUrls: ['./show-recipient.component.css'],
-  inputs: ['recipient', 'vendors', 'smallForm']
+  inputs: ['recipients', 'vendors', 'smallForm']
 })
 export class ShowRecipientComponent implements OnInit {
 
@@ -17,18 +17,21 @@ export class ShowRecipientComponent implements OnInit {
 
   public smallForm: boolean;
   public flag: boolean[] = [];
+  public recipients;
 
   @Output()
-  remove: EventEmitter<object> = new EventEmitter();
+  remove: EventEmitter<number> = new EventEmitter();
 
-  removeRecipient(){
-    this.remove.emit();
+  removeRecipient(index){
+    this.remove.emit(index);
   }
 
   @Output()
   edit: EventEmitter<object> = new EventEmitter();
-  editRecipient(){
-    this.edit.emit();
+  editRecipient(name, email, phone, id, index){
+    let data = {name: name, email: email, phone: phone, id: id, index: index}
+    console.log(data)
+    this.edit.emit(data);
   }
 
 

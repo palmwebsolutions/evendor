@@ -1,6 +1,10 @@
+.card{
+    margin-bottom: 10px;
+}
 .card-header{
     padding-top: .30rem;
     padding-bottom: .30rem;
+    background-color: #FAFAFA;
 }
 
 .card-block{
@@ -19,3 +23,8 @@ table{
     padding: .30rem;
     border-top: solid 1px rgb(192, 191, 191);
 }
+
+p{
+    margin: 0;
+}
+

@@ -7,14 +7,14 @@ import 'rxjs/add/operator/map';
 
 import { Item } from './item';
 
-const params = new HttpParams().set('family', '"'+this.family+'"'); //zababachili get zapros
+//const getParams = new HttpParams().set('family', '"'+this.family+'"'); //zababachili get zapros
 
 @Injectable()
 export class ItemService{
     /* public items: Item[]; */
     public family: string;
     
-    private url = "http://localhost/neworder1/inc/itemservice.php"
+    private url = "http://localhost/evendorAPI/itemservice.php"
     constructor(private http: Http){}
 
     getItems(family): Observable<Item[]>{

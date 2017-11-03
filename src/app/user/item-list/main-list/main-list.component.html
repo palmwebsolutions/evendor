@@ -1,4 +1,4 @@
-<div id="accordion" role="tablist" aria-multiselectable="true">
+<div  role="tablist" aria-multiselectable="true">
   <div class="card" *ngFor="let member of allItems; let memberInd=index">
     <a data-toggle="collapse" data-parent="#accordion" href="#{{member.id}}" (click)="getItems(member.id, memberInd)" aria-expanded="false" aria-controls="collapseOne">
       <div class="card-header" role="tab" id="headingOne">
@@ -15,19 +15,26 @@
             <tr *ngFor="let item of member.items; let itemInd=index">
               <td>{{item.name}}</td>
               <td class="vendor">
-                <div class="input-group">
-                  <select class="form-control form-control-sm"  #vendor ngModel>
+                <ng-container *ngIf="item.vendorId==null; else elseTemplate">
+                  <div class="input-group" >
+                  <select class="form-control form-control-sm"  #vendorVal ngModel>
                       <option selected value="">Vendor</option>
                       <option *ngFor="let vendor of vendors; let i=index" value="{{i}}">{{vendor.name}}</option>
                     </select>
                     <span class="input-group-btn">
                         <button class="btn btn-secondary btn-sm" type="button" 
-                              [disabled]="!vendor.value"
-                              (click)="add(memberInd, itemInd, vendor.value)">
+                              [disabled]="!vendorVal.value"
+                              (click)="add(memberInd, itemInd, vendorVal.value, vendors[vendorVal.value]['id'], item.id)">
                               Add
                         </button>
                       </span>
                     </div>
+                </ng-container>
+                <ng-template #elseTemplate>
+                  <span class='text-muted'><strong>{{item.vendorName}}</strong></span>
+                </ng-template>
+                
+                
               </td>
               
             </tr>
