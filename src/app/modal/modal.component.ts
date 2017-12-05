@@ -24,8 +24,15 @@ export class ModalComponent implements OnInit {
     this.saveNote.emit(this.note.note);
   }
 
+  @Output()
+  agree: EventEmitter<null> = new EventEmitter();
+  delete(){
+    this.agree.emit();
+  }
 
   closeModal(){
     this.modal.display = 'none';
   }
+
+
 }

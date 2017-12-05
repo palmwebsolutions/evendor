@@ -1,0 +1,1 @@
+export const modal = {errDisplay:'none', noteDisplay: 'none', agreementDisplay: 'none', text: "", text2: "", text3: ""};

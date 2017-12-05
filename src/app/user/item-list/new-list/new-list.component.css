@@ -27,4 +27,6 @@ table{
 p{
     margin: 0;
 }
-
+.red{
+    border: 1px solid red;
+}

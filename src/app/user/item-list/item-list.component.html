@@ -1,14 +1,20 @@
 
   <div class="row main">
-    <div class="col-sm-6">
+    <div class="col-sm-5">
       <main-list 
             (addToList)="addToList($event)"
             [allItems]="allItems" 
             [vendors]="vendors">
       </main-list>
       <custom-item [vendors]="vendors" (addCustomItem)="addCustomItem($event)"></custom-item>
+      <hr>
+      <ul class="nav">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="../groups">Manage groups</a>
+      </li>
+</ul>
     </div>
-    <div class="col-sm-6">
+    <div class="col-sm-7">
       <new-list 
                 [allItems]="allItems"
                 [family]="family" 

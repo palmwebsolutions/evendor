@@ -3,7 +3,9 @@ export class Item{
         public name: string,
         public family: string,
         public id: number,
-        public type?: string,
-        public note?: string
+        public pack: string,
+        public group?: number,
+        public note?: string,
+        public type?: string
     ){}
 }

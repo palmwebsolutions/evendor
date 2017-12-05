@@ -1,6 +1,11 @@
 import { Component, OnInit, EventEmitter, Output} from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 import { CRUD } from '../../shared/crud';
+
+import { packList } from '../../shared/packaging';
+import { url } from '../../shared/url';
+import { Group } from '../../shared/group';
 
 @Component({
   selector: 'new-list',
@@ -12,27 +17,52 @@ export class NewListComponent implements OnInit {
 
   public userItemsList = [];
   public allItems;
-  public family;
+  private family;
   public modal;
+  public packList = packList;
+  private groups: Group[];
+  private url = url;
 
-  private userItemsUrl='http://localhost/evendorAPI/userlist.php';
-
-  constructor(private crud: CRUD) { }
+  constructor(private crud: CRUD, private http: HttpClient) { }
 
   ngOnInit() {
-    this.crud.read(this.userItemsUrl, '')
+    console.log(packList)
+    this.http.get<any>(this.url.userItems)
+      .subscribe(
+        result=>{
+          this.userItemsList = result;
+          this.getUserList();//call func witch will transmit list to item-list.component 
+          console.log(this.userItemsList)
+        },
+        error=>{
+          console.log(error);
+        },
+        ()=>{}
+      )
+    /* this.crud.read(this.url.userItems, '')
     .subscribe(
       result=>{
         this.userItemsList = result;
         this.getUserList();//call func witch will transmit list to item-list.component 
+        console.log(this.userItemsList)
       }
-    )
+    ) */
+    this.crud.read(this.url.group, '')
+    .subscribe(
+      result=>{
+        this.groups = result;
+        console.log(this.groups)
+      },
+      error=>{
+
+      }
+    );
   }
 
 
 //Remove item from user items list
   removeFromList(vendorInd, vendorId, itemInd, itemId, familyId){
-    this.crud.delete(this.userItemsUrl, itemId)
+    this.crud.delete(this.url.userItems, itemId)
     .subscribe(
       result=>{
           if(result === 1){
@@ -78,7 +108,7 @@ export class NewListComponent implements OnInit {
   changeVendor(newIndex, prevIndex, itemIndex, newId, prevId, itemId, familyId, newName){
     if(newIndex != "" && prevIndex != newIndex){
       let data = {newId: newId, prevId: prevId, itemId: itemId};
-      this.crud.update(this.userItemsUrl, data)
+      this.crud.update(this.url.userItems, data)
         .subscribe(result=>{
           if(result === 1){
             this.userItemsList[newIndex]['items'].push(this.userItemsList[prevIndex]['items'][itemIndex]);
@@ -102,5 +132,47 @@ export class NewListComponent implements OnInit {
           }
         });
     }
+  }
+
+
+  //Change package
+
+  changePack(itemId, itemInd, vendorId, vendorInd, pack){
+    console.log(itemId, itemInd, vendorId, vendorInd, pack)
+    let data = {vendorId: vendorId, itemId: itemId, pack: pack};
+    this.crud.update(this.url.userItems, data)
+      .subscribe(result=>{
+        if(result != 1){
+          this.userItemsList[vendorInd]['items'][itemInd]['pack'] = 'Case';
+          this.modal.text = "Couldn't change packaging";
+          this.modal.errDisplay = "block";
+        }
+        }, 
+        error=>{
+          this.userItemsList[vendorInd]['items'][itemInd]['pack'] = 'Case';
+          this.modal.text = "Couldn't change packaging";
+          this.modal.errDisplay = "block";
+        }
+      );//subscribe
+  }//changePack
+
+
+  //Change group
+
+  changeGroup(itemId, groupId, itemInd, vendorInd){
+    console.log(itemId, groupId, itemInd, vendorInd)
+    this.crud.update(this.url.group, {itemId: itemId, id: groupId})
+      .subscribe(
+        result=>{
+          if(result != 1){
+            this.userItemsList[vendorInd]['items'][itemInd]['group'] = 0;
+            this.modal.text = "Couldn't change packaging";
+            this.modal.errDisplay = "block";
+          }
+        },
+        error=>{
+
+        }
+      );
   }
 }

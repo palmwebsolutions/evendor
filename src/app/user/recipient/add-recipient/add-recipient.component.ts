@@ -4,6 +4,7 @@ import { NgForm } from '@angular/forms'
 import { Recipient } from '../../shared/recipient';
 import { Vendor } from '../../shared/vendor';
 
+
 @Component({
   selector: 'add-recipient',
   templateUrl: './add-recipient.component.html',
@@ -16,7 +17,6 @@ export class AddRecipientComponent implements OnInit {
 
   ngOnInit() {}
   
-
   public recipient: Recipient;
   public vendors: Vendor[];
   public flag;
@@ -30,7 +30,6 @@ export class AddRecipientComponent implements OnInit {
       if(this.flag[i]==true){
         vendors.push(new Vendor(this.vendors[i]['name'], this.vendors[i]['id']));
       }
-      
     }
     this.recipient.vendor = vendors;
     this.save.emit(this.recipient);

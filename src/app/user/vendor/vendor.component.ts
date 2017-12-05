@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
 
-import { vendorService } from '../shared/vendorService';
 import { CRUD } from '../shared/crud';
 import { Vendor } from '../shared/vendor';
+import { modal } from '../shared/modal';
+
 
 @Component({
   selector: 'app-vendor',
@@ -11,10 +12,11 @@ import { Vendor } from '../shared/vendor';
   styleUrls: ['./vendor.component.css']
 })
 export class VendorComponent implements OnInit {
-  vendors: Vendor[];
   
-  public modal = {errDisplay:'none', noteDisplay: 'none', text: ""};
+  public vendors: Vendor[];
+  public modal = modal;
   private vendorUrl = "http://localhost/evendorAPI/vendor.php";
+  private userListUrl = "http://localhost/evendorAPI/userlist.php";
   
     
     constructor(private crud: CRUD) { }
@@ -27,6 +29,14 @@ export class VendorComponent implements OnInit {
       .subscribe(
         result=>{
           this.vendors = result;
+        },
+        error=>{
+          if(error.status == 0){
+            console.log('no internet connection')
+          }else{
+            console.log("Something went wrong")
+          }
+          
         }
       )
   };
@@ -47,17 +57,26 @@ export class VendorComponent implements OnInit {
   }
 
   removeVendor(id: number, index: number){
-    this.crud.delete(this.vendorUrl, {id: id})
-    .subscribe(
-      result=>{
-        if(result === 1){
-          this.vendors.splice(index, 1);
-        }else{
-          this.modal.text = "Couldn't remove vendor";
-          this.modal.errDisplay = "block";
-        }
+    this.crud.read(this.userListUrl, {vendorId: id})
+    .subscribe(result=>{
+      if(result[0] > 0){
+        this.modal.text = "Can't remove vendor because there are one or more assigned items to this vendor";
+        this.modal.errDisplay = "block";
+      }else{
+        this.crud.delete(this.vendorUrl, {id: id})
+        .subscribe(result=>{
+            if(result === 1){
+              this.vendors.splice(index, 1);
+            }else{
+              this.modal.text = "Couldn't remove vendor";
+              this.modal.errDisplay = "block";
+            }
+          }
+        );
       }
-    );
+    });
+    
+    
     
   }
 

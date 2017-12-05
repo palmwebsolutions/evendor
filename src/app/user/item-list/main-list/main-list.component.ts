@@ -1,6 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 
-import { ItemService } from '../../shared/itemService';
 import { CRUD } from '../../shared/crud';
 
 @Component({
@@ -15,7 +14,7 @@ export class MainListComponent implements OnInit {
   public allItems = this.allItems;
   private url='http://localhost/evendorAPI/itemservice.php';
   
-  constructor(private itemService: ItemService, private crud: CRUD) { }
+  constructor(private crud: CRUD) { }
   ngOnInit() {
 
   }

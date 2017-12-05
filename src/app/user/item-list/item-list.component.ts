@@ -1,18 +1,18 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http'
 
-import { NewListComponent } from './new-list/new-list.component'
+import { NewListComponent } from './new-list/new-list.component' //Needed for @viewChild
 
-import { ItemService } from '../shared/itemService';
-import { vendorService } from '../shared/vendorService'; 
-import { UserListService } from '../shared/userListService'; 
-import { CustomItemService } from '../shared/customItemService';
-import { ItemNoteService } from '../shared/itemNoteService';
 import { CRUD } from '../shared/crud';
 
 
 import { Item } from '../shared/item';
 import { Vendor } from '../shared/vendor';
 import { family } from '../shared/family';
+import { modal } from '../shared/modal';
+import { url } from '../shared/url';
+
+
 
 @Component({
   selector: 'app-item-list',
@@ -26,7 +26,7 @@ export class ItemListComponent implements OnInit {
   public allItems: any[] = [];
   public vendors: Vendor[];
   public userItemsList = [];
-  public modal = {errDisplay:'none', noteDisplay: 'none', text: ""};
+  public modal = modal;
   public userId = 1;
   public note = {name: '', note:'', vendorInd: null, itemInd: null}
   private mainItemsUrl='http://localhost/evendorAPI/itemservice.php';
@@ -34,16 +34,27 @@ export class ItemListComponent implements OnInit {
   private customItemUrl = "http://localhost/evendorAPI/customItem.php";
   private userListUrl = "http://localhost/evendorAPI/userlist.php";
   private vendorUrl = "http://localhost/evendorAPI/vendor.php";
+  private url = url;
 
   
-  constructor(private vendorService: vendorService, private userListService: UserListService, private customItemService: CustomItemService, private itemNoteService: ItemNoteService, private crud: CRUD) { }
+  constructor(private crud: CRUD, private http: HttpClient) { }
   ngOnInit() {
-    this.crud.read(this.vendorUrl, '')
+    this.http.get<Vendor[]>(this.url.vendor)
+      .subscribe(
+        result=>{
+          this.vendors = result;
+        },
+        error=>{
+          console.log(error);
+        },
+        ()=>{}
+      );
+    /* this.crud.read(this.vendorUrl, '')
     .subscribe(
       result=>{
         this.vendors = result;
       }
-    )
+    ) */
 
     for(var i = 0; i < this.family.length; i++){// empty allItems for view
       this.allItems.push({name: this.family[i]['name'], id: this.family[i]['id'], items: []});
@@ -52,7 +63,7 @@ export class ItemListComponent implements OnInit {
   }// END of NgOnInit
     
 
-  @ViewChild(NewListComponent) // Для получения доступа к дочернему компоненту
+  @ViewChild(NewListComponent) // Access to child component
   list: NewListComponent;
 
   userList(){// geting userList
@@ -67,7 +78,11 @@ export class ItemListComponent implements OnInit {
     .subscribe(
       result=>{
         if(result === 1){
+          this.allItems[data.familyInd]['items'][data.itemInd]['pack'] = 'Case';
           this.userItemsList[data.vendorInd]['items'].push(this.allItems[data.familyInd]['items'][data.itemInd]);// add item to userItemsList
+          console.log(data) 
+          console.log(this.userItemsList) 
+          console.log(this.allItems) 
           this.allItems[data.familyInd]['items'][data.itemInd]['vendorId'] = this.vendors[data.vendorInd]['id']; //add vendor id to allitems list
           this.allItems[data.familyInd]['items'][data.itemInd]['vendorName'] = this.vendors[data.vendorInd]['name']; //add vendor name to allitems list
         }else{
@@ -89,7 +104,7 @@ export class ItemListComponent implements OnInit {
     this.crud.create(this.customItemUrl, {customItemName: data.customItemName, vendorId: data.vendorId})
         .subscribe(result=>{
           if(typeof result == 'number' && result > 0){
-            this.userItemsList[data.vendorInd]['items'].push(new Item(data.customItemName, 'cus', result));// add item to userItemsList
+            this.userItemsList[data.vendorInd]['items'].push(new Item(data.customItemName, 'cus', result, 'Case'));// add item to userItemsList
             
           }else{
             this.modal.text = "Couldn't add new item";
