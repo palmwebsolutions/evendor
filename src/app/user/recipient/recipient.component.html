@@ -24,7 +24,7 @@
                 <h6 class="card-title">{{recipient.email}}</h6>
                 <h6 class="card-title">{{recipient.phone}}</h6>
                 <ul>
-                  <li *ngFor="let vendor of recipient.vendor">{{vendor.name}}</li>
+                  <li *ngFor="let vendor of recipient.vendors">{{vendor.name}}</li>
                 </ul>
                 <div class="text-right">
                   <button type="button" class="btn btn-link btn-sm" (click)="editRecipient(recipient.name, recipient.email, recipient.phone, recipient.id, i)">Edit</button>
@@ -38,6 +38,6 @@
   </div>
 
 
-  <modal [modal]="modal" (agree)="agreeToRemove($event)"></modal>
+  <modal [modal]="modal" (delete)="agreeToRemove($event)"></modal>
 
 

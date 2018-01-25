@@ -1,33 +1,36 @@
+
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 
 import { CookieService } from 'ngx-cookie-service';
 
 import { Order } from '../../shared/order';
+import { packList } from '../../shared/packaging';
 
 @Component({
   selector: 'order-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.css'],
-  inputs: ['itemList', 'packList', 'vendors', 'by', 'order']
+  inputs: ['itemList', 'vendors', 'by', 'order', 'isReview']
 })
 export class TableComponent implements OnInit {
 
   public itemList;
-  public packList;
+  public packList = packList;
   public vendors;
   public by;
   public order: Order[];
+  public isReview = false;
 
   constructor(private cookieService: CookieService) { }
 
   ngOnInit() {
-
+   
   }
 
   @Output()
   changeVendor: EventEmitter<object> = new EventEmitter();
-  change(vendorId, itemId, itemIndex){
-    console.log(vendorId, itemId)
+  change(vendorId, itemId, itemIndex, pack, quantity){
+    console.log(vendorId, itemId, itemIndex, pack, quantity)
     let vendorName: string;
 
     for(let vendor of this.vendors){//getting vendorName
@@ -38,6 +41,10 @@ export class TableComponent implements OnInit {
 
     let data = {vendorId: vendorId, vendorName: vendorName, itemId: itemId, itemIndex: itemIndex}
     this.changeVendor.emit(data);
+
+    this.updateOrder(itemId, pack, vendorId, quantity);
+
+
   }
 
  
@@ -57,6 +64,7 @@ export class TableComponent implements OnInit {
 
 
 updateOrder(itemId, pack, vendorId, quantity){
+  console.log(itemId, pack, vendorId, quantity)
   let i = 0;
   if(this.order.length > 0){
     for(let i = 0; i < this.order.length; i++){                   //going thru each item in order
@@ -74,21 +82,25 @@ updateOrder(itemId, pack, vendorId, quantity){
         if(i+1 == this.order.length){                           // loop is done addinf new item into order
           let data: Order = new Order(itemId, vendorId, pack, quantity);
           this.order.push(data);
-          this.setCookie();                                     //set cookie after adding new item
+          this.setCookie();                                    //set cookie after adding new item
+          break; 
         }
       }
     }
   }else{                                                      //adding first item
     let data: Order = new Order(itemId, vendorId, pack, quantity);
     this.order.push(data);
-    this.setCookie();                                   //set cookie after adding new item
+    this.setCookie();              //set cookie after adding new item
   }
     
 }
 
-setCookie(){
-  let orderCookie = JSON.stringify(this.order)
-  this.cookieService.set( 'order', orderCookie, 36001000 );
-}
+  setCookie(){
+    let orderCookie = JSON.stringify(this.order);
+    localStorage.setItem('order', orderCookie);
+  }
+
+
+
 
 }

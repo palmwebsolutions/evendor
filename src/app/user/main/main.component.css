@@ -1,0 +1,36 @@
+.cards-wrap{
+    margin-top: 20px;
+}
+
+.card{
+    margin-bottom: 1rem;
+}
+
+h4{
+    color: #5288b5
+}
+
+.btn-secondary{
+    color: blue;
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {}
+
+ /* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+    .cards-wrap{
+        margin-top: 150px;
+    }
+
+    .card{
+        box-shadow: 3px 3px 5px lightgrey;
+    }
+
+}
+ /* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+
+}
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) { }

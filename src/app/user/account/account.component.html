@@ -1,3 +1,70 @@
-<p>
-  account works!
-</p>
+<div class="row justify-content-center">
+
+  <div class="col-lg-8">
+    <h4>Account</h4>
+    <div *ngIf="showAccount" class="card">
+      <div class="card-block">
+        <table class="table" *ngIf="contacts">
+          <tr>
+            <th>Company:</th>
+            <td>{{contacts.company}}</td>
+          </tr>
+          <tr>
+            <th>Address</th>
+            <td>{{contacts.address}}</td>
+          </tr>
+          <tr>
+            <th>City</th>
+            <td>{{contacts.city}}</td>
+          </tr>
+          <tr>
+            <th>State</th>
+            <td>{{contacts.state}}</td>
+          </tr>
+          <tr>
+            <th>Zip</th>
+            <td>{{contacts.zipcode}}</td>
+          </tr>
+          <tr>
+            <th>Phone</th>
+            <td >{{contacts.phone}}</td>
+          </tr>
+          <tr>
+            <th>Email</th>
+            <td>{{contacts.email}}</td>
+          </tr>
+        </table>
+        
+        <button class="btn btn-link mt-3" (click)="showContacts()">Edit contacts</button>
+        <button class="btn btn-link mt-3" (click)="showCredentials()">Update login/password</button>
+      </div>
+      
+      
+    </div>
+    <div *ngIf="editContacts">
+    <contacts 
+      (cancelEdit)="showContacts()" 
+      (edited)="editedContacts($event)" 
+      [contacts]="contacts" 
+      [editContacts]="true">
+    </contacts>
+  </div>
+    <div *ngIf="editCredentials">
+        <signup-form 
+          [editCredentials]="editCredentials"
+          (cancelEdit)="showCredentials()"
+        >
+
+        </signup-form>
+    <!-- <signup-form
+      (cancelEdit)="editCredentials=!editCredentials" >
+    </signup-form> -->
+    <!-- <contacts 
+      (cancelEdit)="editCredentials=!editCredentials" 
+      (edited)="editedContacts($event)" 
+      [credentials]="credentials" 
+      [editCredentials]="true">
+    </contacts> -->
+  </div>
+  </div>
+</div>

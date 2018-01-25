@@ -10,23 +10,23 @@
         </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group mt-4">
         <div>
           <button type="button" class="btn btn-link" (click)="save()">Save</button>
           <button type="button" class="btn btn-link" (click)="cancel()">Cancel</button>
         </div>
       </div>
     </form>
-    <hr>
+    <hr class="mb-0">
     <h4>Group list</h4>
     <div *ngIf="groups">
       <div>
         <table class="table">
           <tbody>
-            <tr *ngFor="let group of groups; index as i">
-              <td scope="row" width="10%">{{i+1}}</td>
-              <td width="50%">{{group.name}}</td>
-              <td width="40%">
+            <tr *ngFor="let group of groups; index as i" >
+              <td scope="row" width="10%" *ngIf="group.name!='Ungrouped'">{{i+1}}</td>
+              <td width="50%" *ngIf="group.name!='Ungrouped'">{{group.name}}</td>
+              <td width="40%" *ngIf="group.name!='Ungrouped'">
                 <button type="button" class="btn btn-link btn-sm" (click)="edit(group.name, i)">Edit</button>
                 <button type="button" class="btn btn-link btn-sm" (click)="remove(i, group.id)">Remove</button>
               </td>

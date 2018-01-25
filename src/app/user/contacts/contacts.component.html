@@ -1,0 +1,89 @@
+<div>
+  <form [formGroup]="contactsForm" (ngSubmit)="saveContacts()">
+  <div class="form-group row">
+    <label for="example-email-input" class="col-sm-2 col-form-label">Email</label>
+    <div class="col-sm-10">
+      <input class="form-control" type="email" 
+             formControlName="email" 
+             [style.border-color]="formErrors.email.length>0 ? 'red': ''">
+             
+      <div *ngFor="let item of formErrors.email" class="error-message">
+        {{item}}
+      </div>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="example-tel-input" class="col-sm-2 col-form-label">Telephone</label>
+    <div class="col-sm-10">
+      <input class="form-control" 
+            formControlName="phone" 
+            [textMask]="{mask: mask}"
+            [style.border-color]="formErrors.phone.length>0 ? 'red': ''">
+      <div *ngFor="let item of formErrors.phone" class="error-message">
+         {{item}}
+      </div>
+    </div>
+  </div>
+  <input class="form-control" type="text" [hidden]="true"  formControlName="phone" >
+  <div class="form-group row">
+    <label  class="col-sm-2 col-form-label">Company</label>
+    <div class="col-sm-10">
+      <input class="form-control" type="text"  
+            formControlName="company" 
+            [style.border-color]="formErrors.company.length>0 ? 'red': ''">
+      <div *ngFor="let item of formErrors.company" class="error-message">
+         {{item}}
+      </div>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label class="col-sm-2 col-form-label">Address</label>
+    <div class="col-sm-10">
+      <input class="form-control" type="text" 
+            formControlName="address" 
+            [style.border-color]="formErrors.address.length>0 ? 'red': ''">
+      <div *ngFor="let item of formErrors.address" class="error-message">
+         {{item}}
+      </div>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label class="col-sm-2 col-form-label">City</label>
+    <div class="col-sm-10">
+      <input class="form-control" type="text" 
+            formControlName="city" 
+            [style.border-color]="formErrors.city.length>0 ? 'red': ''">
+
+      <div *ngFor="let item of formErrors.city" class="error-message">
+         {{item}}
+      </div>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label class="col-sm-2 col-form-label">State</label>
+    <div class="col-sm-4">
+      <select class="form-control" formControlName="state" [style.border-color]="formErrors.state.length>0 ? 'red': ''">
+        <option value="" selected>Select state...</option>
+        <option value="{{state.id}}" *ngFor="let state of states; let i=index">{{state.name}}</option>
+      </select>
+     <div *ngFor="let item of formErrors.state" class="error-message">
+        {{item}}
+     </div> 
+    </div>
+    
+
+    <label class="col-sm-2 col-form-label zip" >Zip</label>
+    <div class="col-sm-4">
+      <input class="form-control" type="text" maxlength="5" 
+              formControlName="zipcode" 
+              (keypress)="numberOnly($event)"
+              [style.border-color]="formErrors.zipcode.length>0 ? 'red': ''">
+      <div *ngFor="let item of formErrors.zipcode" class="error-message">
+         {{item}}
+      </div>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-link mt-3" [disabled]="!contactsForm.valid">Save</button>
+  <button type="button" class="btn btn-link mt-3" (click)="cancel()">Cancel</button>
+</form>
+</div>

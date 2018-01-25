@@ -25,9 +25,16 @@ export class ModalComponent implements OnInit {
   }
 
   @Output()
-  agree: EventEmitter<null> = new EventEmitter();
-  delete(){
-    this.agree.emit();
+  delete: EventEmitter<null> = new EventEmitter();
+  deleteOnModal(){
+    this.delete.emit();
+    console.log('delete')
+  }
+  
+  @Output()
+  ok: EventEmitter<null> = new EventEmitter();
+  okOnModal(){
+    this.ok.emit();
   }
 
   closeModal(){

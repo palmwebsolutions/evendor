@@ -1,15 +1,17 @@
+
+import { RegistrationComponent } from './registration/registration.component';
+import { AuthService } from './services/auth.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
-import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { HashLocationStrategy, LocationStrategy, PathLocationStrategy } from '@angular/common';
 
 import { CookieService } from 'ngx-cookie-service';
 
 import { CRUD } from './user/shared/crud';
-import { OnCreate } from './user/shared/checkboxDirective';
-//import { UserList } from './user/shared/getuserlist';
+import { AuthGuard} from './services/auth-guard.service';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -17,15 +19,18 @@ import { HomeComponent } from './home/home.component';
 import { UserComponent } from './user/user.component';
 import { UserModule } from './user/user.module';
 
-//import { ModalComponent } from './modal/modal.component';
 
+//import { SpinnerComponent } from './spinner/spinner.component';
+//import { ModalComponent } from './modal/modal.component';
+import { TextMaskModule } from 'angular2-text-mask';
+//import { SignupFormComponent } from './signup-form/signup-form.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     UserComponent,
-    OnCreate
+    RegistrationComponent
   ],
   imports: [
     BrowserModule,
@@ -33,9 +38,11 @@ import { UserModule } from './user/user.module';
     HttpModule,
     HttpClientModule,
     AppRoutingModule,
-    UserModule
+    UserModule,
+    ReactiveFormsModule,
+    TextMaskModule
   ],
-  providers: [CRUD, CookieService, {provide: LocationStrategy, useClass: HashLocationStrategy}],
+  providers: [CRUD, CookieService, AuthGuard, AuthService, {provide: LocationStrategy, useClass: HashLocationStrategy}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

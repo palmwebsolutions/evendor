@@ -1,3 +1,36 @@
-<p>
-  order-history works!
-</p>
+<div class="row justify-content-center mt-5 mb-4">
+  <div class="col-md-10">
+    <h4>Orders history</h4>
+    <div class="row">
+      <div class="col-md-5">
+        <h5 *ngIf="history && history.length == 0" class="text-warning">There are no orders on this period of time</h5>
+        <ul>
+          <li *ngFor="let link of history"><button class="btn btn-link" (click)="getOrder(link.id)">{{link.date}}</button></li>
+        </ul>
+      </div>
+      <div class="col-md-7">
+        <div class="form-inline">
+          <div class="form-group">
+            <select name="month" id="month" class="form-control  mr-3" [(ngModel)]="date.month" ngModel>
+                    <option value="{{month.id}}" *ngFor="let month of months">{{month.name}}</option>
+                  </select>
+            <select name="month" id="month" class="form-control " [(ngModel)]="date.year" ngModel>
+                    <option value="{{year}}" *ngFor="let year of years">{{year}}</option>
+                  </select>
+          </div>
+
+          <button class="btn btn-link pb-0 mr-3" (click)="submit()">Submit</button>
+        </div>
+
+
+      </div>
+
+    </div>
+
+
+    <div class="show-order">
+      <show-order *ngIf="showOrder" [order]="order"></show-order>
+    </div>
+  </div>
+</div>
+<modal [modal]="modal"></modal>

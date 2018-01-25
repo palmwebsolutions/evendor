@@ -4,7 +4,7 @@
     <div class="col-md-6 col-sm-8">
         <h4>Add new vendor</h4> 
       <add-vendor (add)="addVendor($event)" [vendorName]="vendorName"></add-vendor>
-      <hr>
+      <hr class="mb-0">
       <h4>Vendors list</h4>
     <div *ngIf="vendors">
         <div *ngFor="let vendor of vendors; index as i">

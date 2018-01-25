@@ -11,7 +11,7 @@ import { Vendor } from './vendor';
 
 @Injectable()
 export class CRUD{
-    public headers = new Headers({'Content-Type': 'application/json'});
+    public headers = new Headers({'Content-Type': 'text'});
 
     constructor(private http: Http){}
  
@@ -23,7 +23,7 @@ export class CRUD{
 
     }
 
-    read(url, data): Observable<any[]>{
+    read(url, data): Observable<any>{
         if(data){
             return this.http
             .get(url+ "/" + JSON.stringify(data))

@@ -1,0 +1,24 @@
+/* .main-row, show-order{
+    margin-top: 40px;
+    margin-bottom: 10px;
+} */
+
+h4{
+    padding: 30px;
+    color: #5288b5
+}
+
+.btn{
+    padding: 0.3rem 1rem;
+}
+
+ul{
+    list-style-type: none;
+}
+
+.red{
+    border: solid 1px red;
+}
+.green{
+    border: solid 1px green;
+}

@@ -37,16 +37,16 @@
                       </div>
                       <div class="col-xs-3">
                         <select class="form-control form-control-sm" name="item.group" (change)="changeGroup(item.id, item.groupId, itemInd, vendorInd)" [(ngModel)]="item.groupId" ngModel>
-                          <option value=0 selected>Group</option>
+                          <!-- <option value=0 selected>Ungrouped</option> -->
                           <option *ngFor="let group of groups" value="{{group.id}}">{{group.name}}</option>
                         </select>
                       </div>
                       <div class="col-xs-3">
                           <button type="button" class="btn btn-link btn-sm" (click)="addNote(itemInd, vendorInd)">
-                                    <img src="../../assets/images/edit.png" width="20" alt="">
+                                    <img src="./assets/images/edit.png" width="20" alt="">
                           </button>
                           <button type="button" class="btn btn-link btn-sm" (click)='removeFromList(vendorInd, vendor.id, itemInd, item.id, item.family)'>
-                              <img src="../../assets/images/trash.png" width="20" alt="">
+                              <img src="./assets/images/trash.png" width="20" alt="">
                             </button>
                           
                       </div>

@@ -1,16 +1,86 @@
-.container-fluid{
-    margin: 0;
-    padding: 0;
+.navbar{
+    background-color: none;
+}
+.main{
+    height: 100vh;
+    width: 100%;
+    background-color:rgba(247, 247, 247, 0.7);
 }
 
-.btn-login{
-    color: white
+:disabled{
+    color: blue;
+    font-weight: 600;
 }
 
-.navbar-dark{
-    color: white;
-    background-color: #585252;
+.display-4 {
+    font-size: 2.5rem;
 }
-.navbar-brand{
-    padding-left: 100px;
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+    
+}
+
+ /* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+    .form-wrap{
+        padding-top: 100px;
+        padding-bottom: 100px;
+        margin-top: 100px;
+        background-image: url("../../assets/images/tablet-left.png");
+        background-image: linear-gradient(to bottom, rgba(255,255,255,0.3) 0%,rgba(255,255,255,0.3) 100%), url("../../assets/images/tablet-left.png");
+        /* background-image: linear-gradient(to bottom, rgba(255,255,255,0.3) 0%,rgba(255,255,255,0.3) 100%), url("../../assets/images/tablet-left.png"); */
+        background-repeat: no-repeat;
+        background-position: top right;
+    }
+    .display-4 {
+        font-size: 3.5rem;
+    }
+ }
+
+ /* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+    
+    
+    
+
+    .nav-link{
+        margin-right: 150px;  
+        color: blue;  
+    }
+    .navbar-brand{
+        margin-left: 150px;
+    }
+
+    /* .tablet{
+        height: 400px;
+        background-image: url("../../assets/images/ipadmini5.jpg");
+    } */
+}
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) { 
+    
+
+}
+
+.red{
+    background-color: red;
+}
+.yellow{
+    background-color: yellow;
+}
+
+.nav-item .nav-link{
+    
+    color: blue;  
+}
+
+.alert{
+    margin-left: 1rem;
+    padding: 0.5rem 1.25rem;
+}
+
+.disp-text{
+    padding-bottom: 70px;
+    margin-left: 1rem;
 }

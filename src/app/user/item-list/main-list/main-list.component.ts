@@ -1,31 +1,43 @@
+import { url } from './../../shared/url';
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 
 import { CRUD } from '../../shared/crud';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'main-list',
   templateUrl: './main-list.component.html',
   styleUrls: ['./main-list.component.css'],
-  inputs: ['allItems', 'vendors']
+  inputs: ['allItems', 'vendors', 'token']
 })
+
 
 export class MainListComponent implements OnInit {
 
   public allItems = this.allItems;
-  private url='http://localhost/evendorAPI/itemservice.php';
+  private url = url;
+  private token = this.token;
   
-  constructor(private crud: CRUD) { }
+  constructor(private crud: CRUD, private http: HttpClient) { }
   ngOnInit() {
 
   }
 
   getItems(familyId, index){
-    this.crud.read(this.url, familyId)
-        .subscribe(
-          result=>{
-            this.allItems[index]['items'] = result;
-          }
-        );
+
+    this.http.get(this.url.items + '/' + familyId + '?token=' + this.token)
+      .subscribe(
+        result=>{
+          console.log(result)
+          this.allItems[index]['items'] = result;
+          console.log(this.allItems)
+        },
+        error=>{
+          console.log(error)
+        }
+      );
+
+
   }
 
 

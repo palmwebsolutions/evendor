@@ -5,6 +5,7 @@ import { Vendor } from '../shared/vendor';
 import { modal } from '../shared/modal';
 import { url } from '../shared/url';
 import { Group } from '../shared/group';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-group',
@@ -20,30 +21,30 @@ export class GroupComponent implements OnInit {
   public editGroup = '';
   private url = url;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private auth: AuthService) { }
 
   ngOnInit() {
-    this.http.get<Group[]>(this.url.group)
+    this.http.get<Group[]>(this.url.groups + '?token=' + this.auth.token)
     .subscribe(
       result=>{
         this.groups = result;
         console.log(this.groups)
       },
       error=>{
-        console.log('groups')
+        console.log(error)
       }
     );
   }
 
-  edit(group, index){
-    this.groupName = group;
+  edit(groupName, index){
+    this.groupName = groupName;
     this.editGroup = index;
   }
 
   save(){
     console.log(this.editGroup);
-    if(this.editGroup !== ''){
-      this.http.put(this.url.group, {name: this.groupName, id: this.groups[this.editGroup]['id']})
+    if(this.editGroup !== ''){//if group is exist then update
+      this.http.put(this.url.group + '/' + this.groups[this.editGroup]['id'] + '?token=' + this.auth.token, {name: this.groupName})
         .subscribe(
           result=>{
             if(result > 0){
@@ -57,9 +58,9 @@ export class GroupComponent implements OnInit {
           }, 
           error=>{}
         );   
-    }else{
-      if(this.groupName !== ''){
-        this.http.post<number>(this.url.group, {name: this.groupName})
+    }else{// creating new group
+      if(this.groupName !== ''){// if new group name not empty
+        this.http.post<number>(this.url.group + '?token=' + this.auth.token, {name: this.groupName})
         .subscribe(
           result=>{
             if(result > 0){
@@ -90,16 +91,17 @@ export class GroupComponent implements OnInit {
   }
 
   remove(index, id){
-    const params = new HttpParams().set('id', id);
-    this.http.delete(this.url.group, {params})
+   
+    this.http.delete(this.url.group + '/' + id + '?token=' + this.auth.token)
       .subscribe(
         result=>{
-
+          if(result > 0) this.groups.splice(index, 1);
         },
         error=>{
-
+          this.modal.text = "Couldn't delete the group";
+          this.modal.errDisplay = "block";
         }
       )
-    this.groups.splice(index, 1);
+    
   }
 }

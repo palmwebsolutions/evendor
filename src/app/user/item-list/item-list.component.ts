@@ -1,3 +1,4 @@
+import { AuthService } from './../../services/auth.service';
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http'
 
@@ -11,6 +12,9 @@ import { Vendor } from '../shared/vendor';
 import { family } from '../shared/family';
 import { modal } from '../shared/modal';
 import { url } from '../shared/url';
+import { packList } from '../shared/packaging';
+import { Group } from '../shared/group';
+import { allItems } from '../shared/allitems';
 
 
 
@@ -23,7 +27,7 @@ import { url } from '../shared/url';
 export class ItemListComponent implements OnInit {
   
   public family = family;
-  public allItems: any[] = [];
+  public allItems = allItems;
   public vendors: Vendor[];
   public userItemsList = [];
   public modal = modal;
@@ -35,34 +39,28 @@ export class ItemListComponent implements OnInit {
   private userListUrl = "http://localhost/evendorAPI/userlist.php";
   private vendorUrl = "http://localhost/evendorAPI/vendor.php";
   private url = url;
+  private groups: Group[] = [];
+  public packList = packList;
+  private token = this.auth.token;
 
   
-  constructor(private crud: CRUD, private http: HttpClient) { }
+  constructor(private crud: CRUD, private http: HttpClient, private auth: AuthService) { }
   ngOnInit() {
-    this.http.get<Vendor[]>(this.url.vendor)
-      .subscribe(
-        result=>{
-          this.vendors = result;
-        },
-        error=>{
-          console.log(error);
-        },
-        ()=>{}
-      );
-    /* this.crud.read(this.vendorUrl, '')
+    this.http.get<any>(this.url.vendors + '?token=' + this.token)
     .subscribe(
       result=>{
+        console.log(result)
         this.vendors = result;
+      },
+      error=>{
+        console.log(error)
       }
-    ) */
-
-    for(var i = 0; i < this.family.length; i++){// empty allItems for view
-      this.allItems.push({name: this.family[i]['name'], id: this.family[i]['id'], items: []});
-    }
-    
+    );
+  
   }// END of NgOnInit
     
 
+  
   @ViewChild(NewListComponent) // Access to child component
   list: NewListComponent;
 
@@ -74,24 +72,28 @@ export class ItemListComponent implements OnInit {
 //////////////////////////////////////////////   ADD ITEM TO USER LIST 
 
   addToList(data){// adding items to new items list
-    this.crud.create(this.userListUrl, {itemId: data.itemId, vendorId: data.vendorId})
-    .subscribe(
-      result=>{
-        if(result === 1){
-          this.allItems[data.familyInd]['items'][data.itemInd]['pack'] = 'Case';
-          this.userItemsList[data.vendorInd]['items'].push(this.allItems[data.familyInd]['items'][data.itemInd]);// add item to userItemsList
-          console.log(data) 
-          console.log(this.userItemsList) 
-          console.log(this.allItems) 
-          this.allItems[data.familyInd]['items'][data.itemInd]['vendorId'] = this.vendors[data.vendorInd]['id']; //add vendor id to allitems list
-          this.allItems[data.familyInd]['items'][data.itemInd]['vendorName'] = this.vendors[data.vendorInd]['name']; //add vendor name to allitems list
-        }else{
+     
+    this.http.post(this.url.useritem + '?token=' + this.token, {itemId: data.itemId, vendorId: data.vendorId})
+      .subscribe(
+        result=>{
+          console.log(result)
+          if(result === true){
+            this.allItems[data.familyInd]['items'][data.itemInd]['pack'] = 'Case';
+            this.allItems[data.familyInd]['items'][data.itemInd]['groupId'] = 0 ;
+            this.userItemsList[data.vendorInd]['items'].push(this.allItems[data.familyInd]['items'][data.itemInd]);// add item to userItemsList
+            console.log(data) 
+            console.log(this.userItemsList) 
+            console.log(this.allItems) 
+            this.allItems[data.familyInd]['items'][data.itemInd]['vendorId'] = this.vendors[data.vendorInd]['id']; //add vendor id to allitems list
+            this.allItems[data.familyInd]['items'][data.itemInd]['vendorName'] = this.vendors[data.vendorInd]['name']; //add vendor name to allitems list
+          }
+        },
+        error=>{
+          console.log(error)
           this.modal.text = "Couldn't add to list";
           this.modal.errDisplay = "block";
         }
-      }
-    )
-    
+      );    
   }
 
 //////////////////////////////////////////////   END OF ADD ITEM TO USER LIST  
@@ -101,16 +103,19 @@ export class ItemListComponent implements OnInit {
 
   addCustomItem(data){
     console.log(data)
-    this.crud.create(this.customItemUrl, {customItemName: data.customItemName, vendorId: data.vendorId})
-        .subscribe(result=>{
-          if(typeof result == 'number' && result > 0){
-            this.userItemsList[data.vendorInd]['items'].push(new Item(data.customItemName, 'cus', result, 'Case'));// add item to userItemsList
-            
-          }else{
-            this.modal.text = "Couldn't add new item";
-            this.modal.errDisplay = "block";
-          }
-        });
+    this.http.post<number>(this.url.customitem + '?token=' + this.auth.token, {name: data.customItemName, vendorId: data.vendorId})
+      .subscribe(
+        result=>{
+          console.log(result)
+          this.userItemsList[data.vendorInd]['items'].push(new Item(data.customItemName, 'cus', result, 'Case', 0));// add item to userItemsList
+          console.log(this.userItemsList[data.vendorInd]['items'])
+        },
+        error=>{
+          console.log(error)
+          this.modal.text = "Couldn't add new item";
+          this.modal.errDisplay = "block";
+        }
+      );
   }
 
 //////////////////////////////////////////////   END OF CUSTOM ITEM 
@@ -119,15 +124,15 @@ export class ItemListComponent implements OnInit {
 //////////////////////////////////////////////    ITEM'S NOTE 
 
 // open note modal
-  noteModal(data){
-    console.log(this.userItemsList)
-    console.log(data)
-    this.modal.noteDisplay = 'block';
-    this.note.name = this.userItemsList[data.vendorInd]['items'][data.itemInd]['name'];
-    this.note.note = this.userItemsList[data.vendorInd]['items'][data.itemInd]['note'];
-    this.note.vendorInd = data.vendorInd;
-    this.note.itemInd = data.itemInd;
-  }
+noteModal(data){
+  console.log(this.userItemsList)
+  console.log(data)
+  this.modal.noteDisplay = 'block';
+  this.note.name = this.userItemsList[data.vendorInd]['items'][data.itemInd]['name'];
+  this.note.note = this.userItemsList[data.vendorInd]['items'][data.itemInd]['note'];
+  this.note.vendorInd = data.vendorInd;
+  this.note.itemInd = data.itemInd;
+}
 
 
 
@@ -138,37 +143,50 @@ export class ItemListComponent implements OnInit {
     let itemId = this.userItemsList[this.note.vendorInd]['items'][this.note.itemInd]['id'];
       if(this.note.note){
         if(this.userItemsList[this.note.vendorInd]['items'][this.note.itemInd]['note']){
-          this.crud.update(this.itemNoteUrl, {itemId: itemId, note: this.note.note})
-              .subscribe(result=>{
-                if(result === 1){
-                  this.userItemsList[this.note.vendorInd]['items'][this.note.itemInd]['note'] = this.note.note;
-                }else{
-                  this.modal.text = "Couldn't update item note";
-                  this.modal.errDisplay = "block";
-                }
-              })
+          this.http.put(this.url.itemsnote + '/' + itemId +'?token=' + this.auth.token, {note: this.note.note})
+            .subscribe(
+              result=>{
+                console.log(result)
+                this.userItemsList[this.note.vendorInd]['items'][this.note.itemInd]['note'] = this.note.note;
+              },
+              error=>{
+                console.log(error)
+                this.modal.text = "Couldn't update item note";
+                this.modal.errDisplay = "block";
+              }
+            );
+          
         }else{
-          this.crud.create(this.itemNoteUrl, {itemId: itemId, note: this.note.note})
-          .subscribe(result=>{
-            if(result === 1){
+          this.http.post(this.url.itemsnote + '/' + itemId +'?token=' + this.auth.token, {note: this.note.note})
+          .subscribe(
+            result=>{
+              console.log(result)
               this.userItemsList[this.note.vendorInd]['items'][this.note.itemInd]['note'] = this.note.note;
-            }else{
+            },
+            error=>{
+              console.log(error)
               this.modal.text = "Couldn't add new note for item";
               this.modal.errDisplay = "block";
             }
-          })
+          );
         }
       }else{
-        this.crud.delete(this.itemNoteUrl, {itemId: itemId, note: this.note.note})
-        .subscribe(result=>{
-          if(result === 1){
+        this.http.delete(this.url.itemsnote + '/' + itemId +'?token=' + this.auth.token)
+        .subscribe(
+          result=>{
+            console.log(result)
             this.userItemsList[this.note.vendorInd]['items'][this.note.itemInd]['note'] = this.note.note;
-          }else{
+          },
+          error=>{
+            console.log(error)
             this.modal.text = "Couldn't remove note";
             this.modal.errDisplay = "block";
           }
-        })
+        );
       }
   }
 /////////////////////////////////////   END OF ITEM'S NOTE 
+
 }
+
+

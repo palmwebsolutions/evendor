@@ -22,6 +22,9 @@ export class AddRecipientComponent implements OnInit {
   public flag;
   
 
+
+
+  
   @Output()
   save: EventEmitter<object> = new EventEmitter();
   saveRecipient(){
@@ -31,7 +34,7 @@ export class AddRecipientComponent implements OnInit {
         vendors.push(new Vendor(this.vendors[i]['name'], this.vendors[i]['id']));
       }
     }
-    this.recipient.vendor = vendors;
+    this.recipient.vendors = vendors;
     this.save.emit(this.recipient);
     this.recipient = new Recipient("","","",[]);
   }

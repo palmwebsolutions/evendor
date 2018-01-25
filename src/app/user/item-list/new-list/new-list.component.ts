@@ -6,65 +6,63 @@ import { CRUD } from '../../shared/crud';
 import { packList } from '../../shared/packaging';
 import { url } from '../../shared/url';
 import { Group } from '../../shared/group';
+import { allItems } from '../../shared/allitems';
 
 @Component({
   selector: 'new-list',
   templateUrl: './new-list.component.html',
   styleUrls: ['./new-list.component.css'],
-  inputs: ['modal', 'allItems', 'family']
+  inputs: ['modal', 'family', 'token']
 })
 export class NewListComponent implements OnInit {
 
   public userItemsList = [];
-  public allItems;
+  public allItems = allItems;
   private family;
   public modal;
   public packList = packList;
   private groups: Group[];
   private url = url;
+  private token = this.token;
 
   constructor(private crud: CRUD, private http: HttpClient) { }
 
   ngOnInit() {
     console.log(packList)
-    this.http.get<any>(this.url.userItems)
+
+    this.http.get<any>(this.url.useritems + '?token=' + this.token)
       .subscribe(
         result=>{
+          console.log(result)
           this.userItemsList = result;
           this.getUserList();//call func witch will transmit list to item-list.component 
-          console.log(this.userItemsList)
+          //console.log(this.userItemsList)
         },
         error=>{
-          console.log(error);
+          console.log(error)
+        }
+      );
+   
+    this.http.get<Group[]>(this.url.groups + '?token=' + this.token)
+      .subscribe(
+        result=>{
+          this.groups = result;
+          this.groups.push(new Group('Ungrouped', 0))
+          console.log(this.groups)
         },
-        ()=>{}
+        error=>{
+          console.log(error)
+        }
       )
-    /* this.crud.read(this.url.userItems, '')
-    .subscribe(
-      result=>{
-        this.userItemsList = result;
-        this.getUserList();//call func witch will transmit list to item-list.component 
-        console.log(this.userItemsList)
-      }
-    ) */
-    this.crud.read(this.url.group, '')
-    .subscribe(
-      result=>{
-        this.groups = result;
-        console.log(this.groups)
-      },
-      error=>{
 
-      }
-    );
   }
 
 
 //Remove item from user items list
   removeFromList(vendorInd, vendorId, itemInd, itemId, familyId){
-    this.crud.delete(this.url.userItems, itemId)
-    .subscribe(
-      result=>{
+    this.http.delete(this.url.useritem + '/' + itemId + '?token=' + this.token)
+      .subscribe(
+        result=>{
           if(result === 1){
             this.userItemsList[vendorInd]['items'].splice(itemInd, 1);
             for(var i = 0; i < this.family.length; i++){
@@ -79,11 +77,13 @@ export class NewListComponent implements OnInit {
                 }
               }
             }
-          }else{
-            this.modal.text = "Couldn't remove from list";
-            this.modal.errDisplay = "block";
           }
-    });
+        },
+        error=>{
+          this.modal.text = "Couldn't remove from list";
+          this.modal.errDisplay = "block";
+        }
+      )
     
   }
 
@@ -106,31 +106,36 @@ export class NewListComponent implements OnInit {
 
 
   changeVendor(newIndex, prevIndex, itemIndex, newId, prevId, itemId, familyId, newName){
-    if(newIndex != "" && prevIndex != newIndex){
-      let data = {newId: newId, prevId: prevId, itemId: itemId};
-      this.crud.update(this.url.userItems, data)
-        .subscribe(result=>{
-          if(result === 1){
-            this.userItemsList[newIndex]['items'].push(this.userItemsList[prevIndex]['items'][itemIndex]);
-            this.userItemsList[prevIndex]['items'].splice(itemIndex, 1);
-            for(var i = 0; i < this.family.length; i++){
-              if(familyId == this.family[i]['id']){
-                if(this.allItems[i]['items'].length > 0){
-                  for(let item of this.allItems[i]['items']){
-                    if(item.id == itemId){
-                      item['vendorId'] = newId;
-                      item['vendorName'] = newName;
-                     break;
+    if(newIndex != "" && prevIndex != newIndex){  //vendor index
+      let data = {value: newId, update: 'vendor'};
+
+      this.http.put<any>(this.url.useritem + '/' + itemId + '?token=' + this.token, data)
+        .subscribe(
+          result=>{
+            if(result === 1){
+              this.userItemsList[newIndex]['items'].push(this.userItemsList[prevIndex]['items'][itemIndex]);
+              this.userItemsList[prevIndex]['items'].splice(itemIndex, 1);
+              for(var i = 0; i < this.family.length; i++){
+                if(familyId == this.family[i]['id']){
+                  if(this.allItems[i]['items'].length > 0){
+                    for(let item of this.allItems[i]['items']){
+                      if(item.id == itemId){
+                        item['vendorId'] = newId;
+                        item['vendorName'] = newName;
+                       break;
+                      }
                     }
                   }
                 }
               }
             }
-          }else{
-             this.modal.text = "Couldn't move to other vendor";
-             this.modal.errDisplay = "block";
+          },
+          error=>{
+            this.modal.text = "Couldn't move to other vendor";
+            this.modal.errDisplay = "block";
           }
-        });
+        );
+    
     }
   }
 
@@ -139,21 +144,22 @@ export class NewListComponent implements OnInit {
 
   changePack(itemId, itemInd, vendorId, vendorInd, pack){
     console.log(itemId, itemInd, vendorId, vendorInd, pack)
-    let data = {vendorId: vendorId, itemId: itemId, pack: pack};
-    this.crud.update(this.url.userItems, data)
-      .subscribe(result=>{
+    let data = {value: pack, update: 'pack'};
+    this.http.put<any>(this.url.useritem + '/' + itemId + '?token=' + this.token, data)
+    .subscribe(
+      result=>{
         if(result != 1){
           this.userItemsList[vendorInd]['items'][itemInd]['pack'] = 'Case';
           this.modal.text = "Couldn't change packaging";
           this.modal.errDisplay = "block";
         }
-        }, 
-        error=>{
-          this.userItemsList[vendorInd]['items'][itemInd]['pack'] = 'Case';
-          this.modal.text = "Couldn't change packaging";
-          this.modal.errDisplay = "block";
-        }
-      );//subscribe
+      },
+      error=>{
+        this.userItemsList[vendorInd]['items'][itemInd]['pack'] = 'Case';
+        this.modal.text = "Couldn't change packaging";
+        this.modal.errDisplay = "block";
+      }
+    );
   }//changePack
 
 
@@ -161,18 +167,23 @@ export class NewListComponent implements OnInit {
 
   changeGroup(itemId, groupId, itemInd, vendorInd){
     console.log(itemId, groupId, itemInd, vendorInd)
-    this.crud.update(this.url.group, {itemId: itemId, id: groupId})
-      .subscribe(
-        result=>{
-          if(result != 1){
-            this.userItemsList[vendorInd]['items'][itemInd]['group'] = 0;
-            this.modal.text = "Couldn't change packaging";
-            this.modal.errDisplay = "block";
-          }
-        },
-        error=>{
 
+    let data = {value: groupId, update: 'group'};
+    this.http.put<any>(this.url.useritem + '/' + itemId + '?token=' + this.token, data)
+    .subscribe(
+      result=>{
+        if(result != 1){
+          this.userItemsList[vendorInd]['items'][itemInd]['group'] = 0;
+          this.modal.text = "Couldn't change packaging";
+          this.modal.errDisplay = "block";
         }
-      );
+      },
+      error=>{
+        this.userItemsList[vendorInd]['items'][itemInd]['group'] = 0;
+        this.modal.text = "Couldn't change packaging";
+        this.modal.errDisplay = "block";
+      }
+    );
+
   }
 }

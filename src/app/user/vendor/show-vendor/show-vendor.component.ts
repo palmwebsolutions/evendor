@@ -17,19 +17,31 @@ export class ShowVendorComponent implements OnInit {
   }
 
   public editVendor: boolean = false;
+  public vendorName: string = '';
 
   @Output()
-  remove: EventEmitter<number> = new EventEmitter();
+  remove: EventEmitter<object> = new EventEmitter();
 
-  removeVendor(id){
-    this.remove.emit(id);
+  removeVendor(id, name){
+    this.remove.emit({id: id, name: name});
   }
 
   @Output()
   save: EventEmitter<object> = new EventEmitter();
 
   saveVendor(){
+    this.vendor.name = this.vendorName
     this.save.emit({name: this.vendor.name, id: this.vendor.id});
     this.editVendor = false;
+  }
+
+  edit(name){
+    this.editVendor = true;
+    this.vendorName = name;
+  }
+
+  cancel(){
+    this.editVendor = false;
+    this.vendorName = '';
   }
 }
