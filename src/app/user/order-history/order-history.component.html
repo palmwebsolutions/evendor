@@ -8,6 +8,7 @@
           <li *ngFor="let link of history"><button class="btn btn-link" (click)="getOrder(link.id)">{{link.date}}</button></li>
         </ul>
       </div>
+      
       <div class="col-md-7">
         <div class="form-inline">
           <div class="form-group">
@@ -29,8 +30,46 @@
 
 
     <div class="show-order">
-      <show-order *ngIf="showOrder" [order]="order"></show-order>
+      <show-order *ngIf="show.order" [order]="order" [showUpdateButton]="showUpdateButton" (updateOrder)="updateOrder()"></show-order>
     </div>
+    <div class="float-right clearfix pt-3 pr-3" *ngIf="show.review">
+      <button type="button" class="btn btn-link" (click)="cancelUpdate()">Cancel</button>
+      <button type="button" class="btn btn-link" (click)="editUpdate()">Edit</button>
+      <button type="button" class="btn btn-link" (click)="submitUpdate()">Submit</button>
+    </div>
+
+    <div *ngIf="show.updateTable">
+        <div role="tablist" aria-multiselectable="true">
+            <div class="card" *ngFor="let vendor of itemList; let vendorInd=index">
+              <a data-toggle="collapse" data-parent="#accordion" href="#{{'i'+vendor.id+'i'}}" aria-expanded="true">
+                <div class="card-header" role="tab" id="headingOne">
+                  <h5 class="mb-0">
+                    {{vendor.name}}
+                  </h5>
+                </div>
+              </a>
+              <div id="{{'i'+vendor.id+'i'}}" class="collapse" role="tabpanel" aria-labelledby="headingOne">
+                <div class="card-block">
+                  <order-table [itemList]="vendor.items" [order]="order" [isReview]="isReview" [vendors]="vendors"
+                    [onUpdate] = "true"
+                    [vendorIndex] = "vendorInd"
+                    (changeVendor)="changeVendor($event)">
+                  </order-table>
+                    <div class="form-group order-buttons">
+                        <label for="note">Note for {{vendor.name}}</label>
+                        <textarea class="form-control" #textarea rows="4" (keyup)="setVendorNote(textarea.value, vendorInd)">{{vendor.vendorNote}}</textarea>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="float-right clearfix pt-3 pr-3">
+            <button type="button" class="btn btn-link" (click)="cancelUpdate()">Cancel</button>
+            <button type="button" class="btn btn-link" (click)="reviewUpdate()">Review</button>
+          </div>
+          
+    </div>
+
   </div>
 </div>
 <modal [modal]="modal"></modal>

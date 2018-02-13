@@ -24,6 +24,7 @@ export class ContactsComponent implements OnInit {
   public contactsForm: FormGroup;
   public url = url;
   public editContacts: boolean;
+  public spinner = 'none';
   public formErrors = {
     'company': [],
     'email': [],
@@ -150,21 +151,6 @@ export class ContactsComponent implements OnInit {
 
     let data = { company: company, email: email, address: address, city: city, state: state, zipcode: zipcode, phone: phone};
 
-    if(this.editContacts == true){
-      this.http.put<Contact>(
-        this.url.accounts + "?token=" + this.auth.token, data,
-        {headers: new HttpHeaders({'X-Requested-With': 'XMLHttpRequest'})}
-      )
-      .subscribe(
-        result=>{
-          data.phone = data.phone.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
-          this.edited.emit(data)
-        },
-        error=>{
-          console.log(error)
-        }
-      );
-    }else{
       this.http.post(
         this.url.accounts + "?token=" + this.auth.token, data,
         {headers: new HttpHeaders({'X-Requested-With': 'XMLHttpRequest'})}
@@ -178,7 +164,7 @@ export class ContactsComponent implements OnInit {
           console.log(error)
         }
       ); 
-    }
+    
   }
 
   numberOnly(event){

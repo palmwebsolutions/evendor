@@ -76,7 +76,16 @@
 
 
     <p class="text-warning"> **All fields are required</p>
-    <button type="submit" class="btn btn-link mt-3" [disabled]="!signupForm.valid">Sign up</button>
+    <!-- <button type="submit" class="btn btn-link mt-3" [disabled]="!signupForm.valid">Sign up</button>
     <button *ngIf="!editCredentials" class="btn btn-link mt-3" (click)="cancel()">Cancel</button>
-    <button *ngIf="editCredentials" class="btn btn-link mt-3" (click)="cancelCredentialEditing()">Cancel</button>
+    <button *ngIf="editCredentials" class="btn btn-link mt-3" (click)="cancelCredentialEditing()">Cancel</button> -->
+    <div *ngIf="!editCredentials">
+        <button type="submit" class="btn btn-link mt-3" [disabled]="!signupForm.valid">Sign up</button>
+         <button  class="btn btn-link mt-3" (click)="cancel()">Cancel</button>
+      </div>
+      <div *ngIf="editCredentials">
+          <button type="submit" class="btn btn-link mt-3" [disabled]="!signupForm.valid">Update</button>
+          <button class="btn btn-link mt-3" (click)="cancelCredentialEditing()">Cancel</button>
+      </div>
   </form>
+  <spinner [spinner]="spinner"></spinner>

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 
 
 
@@ -6,7 +6,7 @@ import { Component, OnInit, OnChanges, SimpleChanges } from '@angular/core';
   selector: 'show-order',
   templateUrl: './show-order.component.html',
   styleUrls: ['./show-order.component.css'],
-  inputs: ['order']
+  inputs: ['order', 'showUpdateButton']
 })
 export class ShowOrderComponent implements OnInit {
 
@@ -35,5 +35,9 @@ export class ShowOrderComponent implements OnInit {
     this.orderByVendor['name'] = this.order[index]['name'];
   }
 
-  
+  @Output()
+  updateOrder: EventEmitter<any> = new EventEmitter();
+  update(){
+    this.updateOrder.emit();
+  }
 }

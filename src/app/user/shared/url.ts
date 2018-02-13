@@ -24,7 +24,11 @@ export const url = {
     orders: <string> "http://evendors.host/api/orders",
     lastorders: <string> "http://evendors.host/api/lastorders",
     orderlist: <string> "http://evendors.host/api/orderlist",
+    orderlistforupdate: <string> "http://evendors.host/api/orderlistforupdate",
+    orderupdate: <string> "http://evendors.host/api/orderupdate",
     suspend: <string> "http://evendors.host/api/suspendedorder",
     itemsnote: <string> "http://evendors.host/api/itemsnote",
-    accounts: <string> "http://evendors.host/api/accounts"
+    accounts: <string> "http://evendors.host/api/accounts",
+    passvalidation: <string> "http://evendors.host/api/passvalidation",
+    loginedit: <string> "http://evendors.host/api/loginedit"
 }

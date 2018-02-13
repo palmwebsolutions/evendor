@@ -19,3 +19,8 @@ table{
 .note-header{
     margin-top: 1rem; 
 }
+
+.btn-link{
+    padding-bottom: 0;
+    padding-top: 0.3rem;
+}

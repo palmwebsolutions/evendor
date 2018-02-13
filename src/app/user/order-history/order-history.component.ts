@@ -1,3 +1,5 @@
+import { Group } from './../shared/group';
+import { Vendor } from './../shared/vendor';
 import { AuthService } from './../../services/auth.service';
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpParams} from '@angular/common/http';
@@ -21,6 +23,15 @@ export class OrderHistoryComponent implements OnInit {
   public date = {month: '01', year: '2016'};
   public modal = modal;
   private months = month;
+  public updatableOrder;
+  public showUpdateButton = false;
+  public showUpdateTable = false;
+  public show = {order: false, updateTable: false, review: false};
+  public vendors = [];
+  public groups: Group[];
+  public itemList: any = [];
+  public orderToUpdate = [];
+  public updates;
   
   private token = new HttpParams().set('token', this.auth.token)
   
@@ -33,6 +44,11 @@ export class OrderHistoryComponent implements OnInit {
         result=>{
           console.log(result);
           this.history = result;
+          if(this.history[0]){
+            this.updatableOrder = this.history[0]['id'];
+            console.log(this.updatableOrder)
+          }
+          
         },
         error=>{
           console.log(error)
@@ -48,24 +64,62 @@ export class OrderHistoryComponent implements OnInit {
   }// ngOnInit
 
   getOrder(id){
-    
-    this.http.get<any[]>(this.url.order + '/' + id, {params: this.token})
+    if(id == this.updatableOrder){
+      this.showUpdateButton = true;
+    }else{
+      this.showUpdateButton = false;
+    }
+    //this.showUpdateTable = false;
+    this.toggleView('');
+    this.http.get<any>(this.url.order + '/' + id, {params: this.token})
       .subscribe(
         result=>{
           console.log(result)
           this.order = result;
-          this.showOrder = true;
+          for(let vendor of this.order){
+            for(let item of vendor.items){
+                item.updates = [];
+            }
+          }
+          for(let vendor of this.order){
+            if(Object.keys(vendor.items).length == 0){//if items undefined
+              //vendor.items = vendor.updates;
+              for(let vendorUpdate of vendor.updates){
+                vendor.items.push({id: vendorUpdate.id, name: vendorUpdate.name, quantity: 0, pack: vendorUpdate.pack, note: vendorUpdate.note})
+              }
+            }
+            for(let update of vendor.updates){
+              
+              for(let item of vendor.items){
+                if(!('updates' in item)) item.updates = [];
+                if(update.id == item.id){
+                  item.updates.push(update);
+                }
+              }
+            }
+            console.log(vendor)
+          }
+
+
+          if(this.updatableOrder){
+            this.orderToUpdate = this.order;
+          }else{
+            this.orderToUpdate = [];
+          }
+          this.toggleView('order');
+          //this.showOrder = true;
         },
         error=>{
           console.log(error)
-        },
+        }
       );
   }
 
 
 
   submit(){
-    this.showOrder = false;
+    this.toggleView('');
+    //this.showOrder = false;
     let date = this.date.year + '-' + this.date.month;
     console.log(date)
     let params = new HttpParams().set('date', date).set('token', this.auth.token);
@@ -85,6 +139,156 @@ export class OrderHistoryComponent implements OnInit {
           console.log(error)
         }
       );
+  }
+
+  updateOrder(){
+    this.toggleView('updateTable');
+    //this.showUpdateTable = true;
+    //this.showOrder = false;
+
+    this.http.get<any[]>(this.url.orderlistforupdate + '?token=' + this.auth.token)
+      .subscribe(
+        result=>{
+          console.log(result)
+          this.vendors = [];
+          for(let vendor of result){
+            this.vendors.push({name: vendor.name, id: vendor.id, changes: [], changesMap: [], items: [], note: []});
+          }
+          this.itemList = result;
+          },
+        error=>{
+          console.log(error)
+        },
+        ()=>{
+          if(this.orderToUpdate){
+            for (let orderVendor of this.orderToUpdate){
+              for(let listVendor of this.itemList){
+                if(orderVendor.id == listVendor.id){
+                  for(let orderItem of orderVendor.items){
+                    for(let listItem of listVendor.items){
+                      if(orderItem.id == listItem.id){
+                        if(orderItem.updates.length > 0){// if item was updated
+                          let upItem = orderItem.updates[orderItem.updates.length - 1];
+                          console.log(upItem)
+                          listItem.quantity = upItem.quantity;
+                          listItem.pack = upItem.pack;
+                        }else{
+                          listItem.quantity = orderItem.quantity;
+                          listItem.pack = orderItem.pack;
+                        }
+                        console.log(orderItem)
+                        
+                        //console.log(this.itemList)
+                        break;//stop itemList for after assingment
+                      }
+                    }
+                  }
+                }
+              }
+
+            }
+          }
+        }
+      );
+
+  }
+
+  reviewUpdate(){
+    for(let vendorOut of this.vendors){
+      for(let vendorIn of this.vendors){
+        for(let change of vendorOut.changes){
+          if(vendorIn.id == change.vendorId){
+            vendorIn.items.push(change)//make sure no double items
+          }
+        }
+      }
+      vendorOut.note.push({note: vendorOut.vendorNote})
+      console.log(this.vendors)
+    }
+    this.order = this.vendors;
+    this.toggleView('order', 'review') 
+    this.showUpdateButton = false;
+    console.log(this.itemList)
+    console.log(this.vendors)
+    console.log(this.orderToUpdate)
+  }
+
+  editUpdate(){
+    for(let vendorOut of this.vendors){
+      vendorOut.items = [];
+    }
+    this.toggleView('updateTable');
+    console.log(this.itemList)
+  }
+
+  cancelUpdate(){
+    this.toggleView('');
+    //this.showUpdateTable = false;
+
+  }
+  
+  changeVendor(data) {
+    console.log(data)
+    let vendorId = data.vendorId;
+    let vendorName = data.vendorName;
+    let itemIndex = data.itemIndex;
+    let itemId = data.itemId;
+    let vendorIndex = data.vendorIndex;
+    let prevVendorIndex = data.prevVendorIndex;
+    this.itemList[prevVendorIndex].items[itemIndex].vendorName = vendorName;
+    this.itemList[prevVendorIndex].items[itemIndex].vendorId = vendorId;
+    this.itemList[vendorIndex].items.push(this.itemList[prevVendorIndex].items[itemIndex]);
+    this.itemList[prevVendorIndex].items.splice(itemIndex, 1);
+    
+    
+    //this.itemList[itemIndex]['vendorId'] = vendorId;
+    //this.itemList[itemIndex]['vendorName'] = vendorName;
+  }
+
+  submitUpdate(){
+    let newOrder = [];
+    let note = [];
+    let i = 0;
+    for(let vendor of this.vendors){
+      for(let item of vendor.items){
+        newOrder.push({
+          quantity: item.quantity,
+          id: item.itemId,
+          pack: item.pack,
+          vendor: item.vendorId
+        });
+      }
+      if(vendor.note){
+        note.push({orderId: this.updatableOrder, note: vendor.vendorNote, vendorId: vendor.id});
+      }
+      
+      i++;
+      if(i == this.vendors.length){
+        this.http.put(this.url.orderupdate + '?token=' + this.auth.token , {order: newOrder, orderId: this.updatableOrder, note: note})
+          .subscribe(
+            result=>{
+              console.log(result)
+              
+              },
+            error=>{
+              console.log(error)
+            }
+          );
+      }
+    }
+    
+    
+  }
+
+  setVendorNote(text, index){
+    this.vendors[index]['vendorNote'] = text;
+    this.itemList[index]['vendorNote'] = text;//view on review
+  }
+
+  toggleView(view, view2?){
+    this.show = {order: false, updateTable: false, review: false};
+    this.show[view] = true;
+    this.show[view2] = true;
   }
 
 }

@@ -1,6 +1,7 @@
 
 <div class="card text-center">
-  <div class="card-header">
+  <div class="card-header clearfix">
+    <button *ngIf="showUpdateButton" type="button" class="btn btn-link float-right" (click)="update()">Update</button>
     <ul class="nav nav-tabs card-header-tabs">
       <li class="nav-item" *ngFor="let vendor of order; let vi=index">
           <a class="nav-link" [ngClass]="{'active': vendor.active}" (click)="toggleVendors(vi)">{{vendor.name}}</a>
@@ -12,7 +13,7 @@
       <table class="table table-hover table-sm">
           <thead>
             <tr>
-                    <td>
+                    <td width="60%">
                       <strong>Item name</strong>
                     </td>
                     <td>
@@ -29,17 +30,27 @@
               
               <td class="text-left">
                 <p class="mb-0">{{item.name}}</p>
+                
+                <div *ngIf="item.updates">
+                  <p class="mb-0 text-danger" *ngFor="let update of item.updates">Updated on {{update.date}}</p>
+                </div>
                 <small class="text-warning">{{item.note}}</small>
               </td>
               <td>
                 {{item.quantity}}
+                <div *ngIf="item.updates">
+                  <p class="text-danger" *ngFor="let update of item.updates">{{update.quantity}}</p>
+                </div>
               </td>
               <td >
                 {{item.pack}}
-              
+                <div *ngIf="item.updates">
+                  <p class="text-danger" *ngFor="let update of item.updates">{{update.pack}}</p>
+                </div>
               </td>
               
             </tr>
+
             <tr  >
               <td colspan="3">
               <p class="text-left note-header"><strong>Note for {{orderByVendor.name}}:</strong></p>
@@ -47,40 +58,13 @@
                 
                 <div class="card-body">
                   
-                  <p class="card-text text-left">{{orderByVendor.note}}</p>
+                  <p *ngFor="let note of orderByVendor.note; let noteIndex=index"  class="card-text text-left" [class.text-success]="noteIndex > 0">{{note.note}} </p>
                 </div>
               </div>
               </td>
             </tr>
           </tbody>
-          <!-- <tbody>
-            <tr *ngFor="let item of orderByVendor.items" >
-              <td class="row">
-              <div class="col-sm-8 text-left">
-                {{item.name}}
-              </div>
-              <div class="col-sm-1">
-                {{item.quantity}}
-              </div>
-              <div class="col-sm-3">
-                {{item.pack}}
-              </div>
-              </td>
-              
-            </tr>
-            <tr >
-              <td >
-              <p class="text-left note-header"><strong>Note for {{orderByVendor.name}}:</strong></p>
-              <div class="card">
-                
-                <div class="card-body">
-                  
-                  <p class="card-text text-left">{{orderByVendor.note}}</p>
-                </div>
-              </div>
-              </td>
-            </tr>
-          </tbody> -->
+
         </table>
   </div>
 </div>

@@ -1,5 +1,6 @@
+import { AuthService } from './../services/auth.service';
 import { Signup } from './../user/shared/signup';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { NgForm, FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -11,13 +12,16 @@ import { emailValidator} from '../validators/email.validators';
   selector: 'signup-form',
   templateUrl: './signup-form.component.html',
   styleUrls: ['./signup-form.component.css'],
-  inputs: ['editCredentials']
+  inputs: ['editCredentials', 'signup']
 })
 export class SignupFormComponent implements OnInit {
 
   private url = url;
   public signupForm: FormGroup;
-  public signup: Signup = new Signup;
+  public signup;
+  public editCredentials;
+  public spinner = 'none';
+  public oldPassword = 'valid';
   
   public formErrors = {
     'name': [],
@@ -53,9 +57,13 @@ export class SignupFormComponent implements OnInit {
   
 
 
-  constructor(private router: Router, private http: HttpClient, private fb: FormBuilder) { }
+  constructor(private router: Router, private http: HttpClient, private fb: FormBuilder, private auth: AuthService) { }
 
   ngOnInit() {
+    if(!this.signup){
+      this.signup = new Signup;
+      this.signup.oldpassword = '1';
+    } 
     this.buildForm()
   }
 
@@ -104,7 +112,6 @@ export class SignupFormComponent implements OnInit {
         this.formErrors[field] = [];//make sure that formerrors is empty from previous error messages
         
         let control = form.get(field);//access to form fild(email, password itd)
-
         if (control && control.dirty && !control.valid ) {
             let message = this.validationMessages[field];
             for (let key in control.errors) {
@@ -118,36 +125,65 @@ export class SignupFormComponent implements OnInit {
       if(data && data.password !== data.password2 ){
       this.formErrors.password2.push('Password doesnt match');
     }
-    }
+  }
     
 }
 
 
 
-onSignup() {
-  console.log("submitted");
-  console.log(this.signupForm.value);
-  let userName = this.signupForm.value.name;
-  let email = this.signupForm.value.email;
-  let password = this.signupForm.value.password;
-  console.log(email)
-  this.http.post(
-    this.url.signup, 
-    {name: userName, email: email, password: password},
-    {headers: new HttpHeaders({'X-Requested-With': 'XMLHttpRequest'})}
-  )
-  .subscribe(
-    result=>{
-      console.log(result)
-      this.router.navigate(['/home']);
-    },
-    error=>{
-      console.log(error)
+  onSignup() {
+    console.log("submitted");
+    console.log(this.signupForm.value);
+    let userName = this.signupForm.value.name;
+    let email = this.signupForm.value.email;
+    let password = this.signupForm.value.password;
+    console.log(email)
+    this.spinner = 'block';
+    if(this.editCredentials){
+      let oldpassword = this.signupForm.value.oldpassword;
+      
+      this.http.put(
+        this.url.signup + '?token=' + this.auth.token, 
+        {name: userName, email: email, password: password, oldpassword: oldpassword},
+        {headers: new HttpHeaders({'X-Requested-With': 'XMLHttpRequest'})}
+      )
+      .subscribe(
+        result=>{
+          console.log(result)
+          this.spinner = 'none';
+          this.cancelCredentialEditing()
+        },
+        error=>{
+          console.log(error);
+          if(error.error.email && error.error.email == 'used'){
+            this.formErrors.email.push('Email in use');
+          }
+          if(error.error.oldpassword && error.error.oldpassword == 'wrong'){
+            this.formErrors.oldpassword.push('Wrong password');
+          }
+          this.spinner = 'none';
+        }
+      );
+
+    }else{
+      this.http.post(
+        this.url.signup, 
+        {name: userName, email: email, password: password},
+        {headers: new HttpHeaders({'X-Requested-With': 'XMLHttpRequest'})}
+      )
+      .subscribe(
+        result=>{
+          console.log(result)
+          this.spinner = 'none';
+          this.router.navigate(['/home']);
+        },
+        error=>{
+          console.log(error)
+          this.spinner = 'none';
+        }
+      );
     }
-  ); 
-
-}
-
+  }
 
   cancel(){
     this.router.navigate(['/home']);

@@ -30,7 +30,7 @@ export class NewOrderComponent implements OnInit {
   //public itemListByGroup: any = [];
   public itemListBy: any = [];
   public by: string = 'byOrder';
-  public order: Order[] = [];
+  public order: Order[] = [];//order list to save in cash
   //public cookieValue = 'UNKNOWN';
   private url = url;
   private groups: Group[];
@@ -66,6 +66,7 @@ export class NewOrderComponent implements OnInit {
                   .subscribe(
                     result => { // itemList subscribe
                       this.itemList = result;
+                      console.log(this.itemList)
                     },
                     error => {
                       console.log(error)
@@ -182,6 +183,14 @@ export class NewOrderComponent implements OnInit {
   submit() {
     //this.spinner = 'block';
     let newOrder = [];
+    let note = [];
+    console.log(this.vendors)
+    for(let vendor of this.vendors){
+      if(vendor.vendorNote){
+        note.push({note: vendor.vendorNote, vendorId: vendor.id});
+      }
+      console.log(note)
+    }
     let i = 0;
     console.log(this.itemList)
     for (let item of this.itemList) {
@@ -197,7 +206,7 @@ export class NewOrderComponent implements OnInit {
       if (i == this.itemList.length) { //if it last loop of parent forloop(for (let item of this.itemList)) submit order
         //newOrder.push(this.vendors);
         console.log(newOrder)
-        this.http.post(this.url.order + '?token=' + this.auth.token, {order: newOrder})
+        this.http.post(this.url.order + '?token=' + this.auth.token, {order: newOrder, note: note})
           .subscribe(
             result => {
               console.log(result)
@@ -262,8 +271,13 @@ export class NewOrderComponent implements OnInit {
         result=>{
           console.log(result)
           if(result.length == 0){
-            this.suspendedOrder = JSON.parse(localStorage.getItem('order'));
-            this.loadSuspendedOrder();
+            let orderfromCash = JSON.parse(localStorage.getItem('order'));
+            if(orderfromCash && orderfromCash.token == this.auth.token){
+              console.log('orderfromCash')
+              this.suspendedOrder = orderfromCash.order;
+              this.loadSuspendedOrder();
+            }
+            
           }else{
             this.modal.date = result[0]['date'];
             this.modal.suspendDisplay = 'block';

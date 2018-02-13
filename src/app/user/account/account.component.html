@@ -52,19 +52,12 @@
     <div *ngIf="editCredentials">
         <signup-form 
           [editCredentials]="editCredentials"
+          [signup] = "signup"
           (cancelEdit)="showCredentials()"
         >
 
         </signup-form>
-    <!-- <signup-form
-      (cancelEdit)="editCredentials=!editCredentials" >
-    </signup-form> -->
-    <!-- <contacts 
-      (cancelEdit)="editCredentials=!editCredentials" 
-      (edited)="editedContacts($event)" 
-      [credentials]="credentials" 
-      [editCredentials]="true">
-    </contacts> -->
+
   </div>
   </div>
 </div>

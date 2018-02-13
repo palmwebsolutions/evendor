@@ -24,7 +24,6 @@
       </div>
     </div>
   </div>
-  <input class="form-control" type="text" [hidden]="true"  formControlName="phone" >
   <div class="form-group row">
     <label  class="col-sm-2 col-form-label">Company</label>
     <div class="col-sm-10">
@@ -83,7 +82,8 @@
       </div>
     </div>
   </div>
-  <button type="submit" class="btn btn-link mt-3" [disabled]="!contactsForm.valid">Save</button>
+  <button type="submit" class="btn btn-link mt-3" [disabled]="!contactsForm.valid || contactsForm.untouched">Save</button>
   <button type="button" class="btn btn-link mt-3" (click)="cancel()">Cancel</button>
 </form>
 </div>
+<spinner [spinner]="spinner"></spinner>

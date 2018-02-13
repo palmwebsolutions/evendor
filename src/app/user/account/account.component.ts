@@ -1,3 +1,4 @@
+import { Signup } from './../shared/signup';
 import { Contact } from './../shared/contacts';
 import { url } from './../shared/url';
 import { AuthService } from './../../services/auth.service';
@@ -18,7 +19,8 @@ export class AccountComponent implements OnInit {
   public editCredentials = false;
   public contacts: Contact;
   public account: Account = new Account('','','','','','','');
-  private token = new HttpParams().set('token', this.auth.token)
+  private token = new HttpParams().set('token', this.auth.token);
+  public signup: Signup = new Signup;
 
   constructor(private http: HttpClient, private auth: AuthService) { }
 
@@ -34,7 +36,26 @@ export class AccountComponent implements OnInit {
           console.log(error)
         },
         ()=>{
-          this.contacts.phone = this.contacts.phone.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
+          if(this.contacts){
+            this.contacts.phone = this.contacts.phone.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3");
+          }else{
+            this.contacts = new Contact;
+            this.showAccount = false;
+            this.editContacts = true;
+          }
+          
+        }
+      );
+
+      this.http.get(this.url.loginedit, {params: this.token})
+      .subscribe(
+        result=>{
+          console.log(this.signup)
+          this.signup.name = result[0][0]['name']
+          this.signup.email = result[0][0]['email']
+        },
+        error=>{
+          console.log(error)
         }
       );
   }
@@ -44,6 +65,7 @@ export class AccountComponent implements OnInit {
   editedContacts(data){
     this.contacts = data;
     this.editContacts = false;
+    this.showAccount = true;
   }
 
   showContacts(){

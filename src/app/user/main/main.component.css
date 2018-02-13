@@ -23,8 +23,8 @@ h4{
         margin-top: 150px;
     }
 
-    .card{
-        box-shadow: 3px 3px 5px lightgrey;
+    .card:hover{
+        box-shadow: 2px 5px 10px 6px lightgrey;
     }
 
 }
