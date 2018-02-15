@@ -88,8 +88,10 @@ export class OrderHistoryComponent implements OnInit {
                 vendor.items.push({id: vendorUpdate.id, name: vendorUpdate.name, quantity: 0, pack: vendorUpdate.pack, note: vendorUpdate.note})
               }
             }
-            for(let update of vendor.updates){
-              
+            
+            for(let update of vendor.updates){//moving updates from vendor to items update each item gets own update
+              let itemIndex = vendor.items.map(function(e) { return e.id; }).indexOf(update.id);//getting index of updated item in items(original order)
+              if(itemIndex == -1) vendor.items.push({id: update.id, name: update.name, pack: update.pack, vendorId: update.vendorId, quantity: 0})/// adding item to items(original order) when item is not in all orders but in updates 
               for(let item of vendor.items){
                 if(!('updates' in item)) item.updates = [];
                 if(update.id == item.id){
@@ -165,7 +167,35 @@ export class OrderHistoryComponent implements OnInit {
               for(let listVendor of this.itemList){
                 if(orderVendor.id == listVendor.id){
                   for(let orderItem of orderVendor.items){
-                    for(let listItem of listVendor.items){
+                    let itemIndex = listVendor.items.map(function(e) { return e.id; }).indexOf(orderItem.id);
+                    if(itemIndex > -1){//elsi est v ordere item togda updatem quantity v litemslist
+                      if(orderItem.updates.length > 0){// if item was updated
+                        let upItem = orderItem.updates[orderItem.updates.length - 1];
+                        console.log(upItem)
+                        listVendor.items[itemIndex].quantity = upItem.quantity;
+                        listVendor.items[itemIndex].pack = upItem.pack;
+                      }else{
+                        listVendor.items[itemIndex].quantity = orderItem.quantity;//adding items when item not in main list
+                        listVendor.items[itemIndex].pack = orderItem.pack;
+                      }
+                    }else{//elsi net v ordere item togda pushaem item
+                      if(orderItem.updates.length > 0){// if item was updated
+                        let upItem = orderItem.updates[orderItem.updates.length - 1];
+                        console.log(upItem)
+                        orderItem.quantity = upItem.quantity;
+                        orderItem.pack = upItem.pack;
+                      }
+                      orderItem.vendorId = orderVendor.id;
+                      orderItem.vendorName = orderVendor.name;
+                      listVendor.items.push(orderItem);
+                      for(let listVendor of this.itemList){
+                        if(listVendor.id != orderVendor.id){
+                          let itemIndex = listVendor.items.map(function(e) { return e.id; }).indexOf(orderItem.id);
+                          listVendor.items.splice(itemIndex, 1);//udalyaem item iz main itemslist
+                        }
+                      }
+                    }
+                    /* for(let listItem of listVendor.items){
                       if(orderItem.id == listItem.id){
                         if(orderItem.updates.length > 0){// if item was updated
                           let upItem = orderItem.updates[orderItem.updates.length - 1];
@@ -181,7 +211,7 @@ export class OrderHistoryComponent implements OnInit {
                         //console.log(this.itemList)
                         break;//stop itemList for after assingment
                       }
-                    }
+                    } */
                   }
                 }
               }
