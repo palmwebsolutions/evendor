@@ -39,13 +39,13 @@
               <td>
                 {{item.quantity}}
                 <div *ngIf="item.updates">
-                  <p class="text-danger" *ngFor="let update of item.updates">{{update.quantity}}</p>
+                  <p class="mb-0 text-danger" *ngFor="let update of item.updates">{{update.quantity}}</p>
                 </div>
               </td>
               <td >
                 {{item.pack}}
                 <div *ngIf="item.updates">
-                  <p class="text-danger" *ngFor="let update of item.updates">{{update.pack}}</p>
+                  <p class="mb-0 text-danger" *ngFor="let update of item.updates">{{update.pack}}</p>
                 </div>
               </td>
               
