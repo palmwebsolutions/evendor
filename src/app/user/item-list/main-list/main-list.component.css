@@ -1,0 +1,29 @@
+.card-header{
+    background:none;
+}
+
+.card-block{
+    padding-right: .30rem;
+    padding-left: .30rem;
+}
+
+.table td{
+    padding: .30rem;
+    border-top: solid 1px rgb(192, 191, 191);
+}
+
+table tr:last-child{
+    border-bottom: solid 1px rgb(192, 191, 191);
+}
+table{
+    table-layout: fixed;
+}
+
+.vendor{
+  width: 150px;  
+}
+
+.text-muted{
+    size: 14px;
+
+}

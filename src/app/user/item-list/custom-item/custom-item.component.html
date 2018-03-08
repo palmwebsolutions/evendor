@@ -1,3 +1,30 @@
-<p>
-  custom-item works!
-</p>
+<div class="custom-item-form">
+    <hr>
+    <h5>Add a custom item</h5>
+    <br>
+  <div class="form-group row">
+    <label for="customName" class="col-sm-3 col-form-label">Item name</label>
+    <div class="col-sm-9">
+      <input type="text" name="customName" class="form-control" [(ngModel)]="customItemName" ngModel>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="vendorVal" class="col-sm-3 col-form-label">Vendor</label>
+    <div class="col-sm-6">
+      
+            <select class="form-control "  [(ngModel)]="vendorVal" ngModel>
+                <option selected value="">Vendor</option>
+                <option *ngFor="let vendor of vendors; let i=index" value="{{i}}">{{vendor.name}}</option>
+              </select>
+            </div>
+         <div class="col-sm-3">     
+                  <button class="btn btn-link from-control" type="button" 
+                        [disabled]="!(vendorVal && customItemName)"
+                        (click)="add(vendors[vendorVal]['id'])">
+                        Add to list
+                  </button>
+                
+              </div>
+    
+  </div>
+</div>

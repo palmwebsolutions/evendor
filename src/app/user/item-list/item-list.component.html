@@ -1,11 +1,33 @@
-<div class="container-fluid">
-  <div class="row">
-    <div class="col-m-6">
-      <main-list></main-list>
-      <custom-item></custom-item>
+<h4>Item list</h4>
+  <div class="row main">
+    
+    <div class="col-sm-5">
+      <main-list 
+            (addToList)="addToList($event)"
+            [allItems]="allItems"
+            [token] = "token" 
+            [vendors]="vendors">
+      </main-list>
+      <custom-item [vendors]="vendors" (addCustomItem)="addCustomItem($event)"></custom-item>
+      <hr>
+      <ul class="nav">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="../groups">Manage groups</a>
+      </li>
+</ul>
     </div>
-    <div class="col-m-6">
-      <new-list></new-list>
+    <div class="col-sm-7">
+      <new-list 
+                
+                [family]="family" 
+                [modal]="modal"
+                [token] = "token"
+                (note)="noteModal($event)"
+                (userList)="userList()"
+                >
+      </new-list>
     </div>
   </div>
-</div>
+
+
+  <modal [modal]="modal" [note]="note"(saveNote)="saveNote()"></modal>

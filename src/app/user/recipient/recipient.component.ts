@@ -1,9 +1,12 @@
+import { Recipient } from './../shared/recipient';
+import { AuthService } from './../../services/auth.service';
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 
-import { Recipient } from '../shared/recipient';
-import { RecipientService} from '../shared/recipientService';
-import { vendorService } from '../shared/vendorService';
 import { Vendor } from '../shared/vendor'; 
+import { modal } from '../shared/modal'; 
+import { CRUD } from '../shared/crud';
+import { url } from '../shared/url';
 
 @Component({
   selector: 'app-recipient',
@@ -12,78 +15,206 @@ import { Vendor } from '../shared/vendor';
 })
 export class RecipientComponent implements OnInit {
 
-  constructor(private RecipientService: RecipientService, private VendorService: vendorService) { }
-
-  ngOnInit() {
-    this.RecipientService.getRecipients().then(result=>this.recipients = result);
-    this.VendorService.getVendors().then(result=>this.vendors = result);
-  }
-
-
+  public modal = modal;
+  public vendors: Vendor[];
   public recipients: Recipient[];
   public recipient: Recipient;
-  public vendors: Vendor[];
   public edit: boolean = false;
   public add: boolean = false;
-  public flag: any[] = [];
+  public flag: boolean[] = [];
   public dummyVendors: Vendor[] = [];
-  public editIndex: number;
+  public agreeToRemoveData;
+  private url = url;
   
-  removeRecipient(index){
-    this.recipients.splice(index, 1);
+
+  private vendorUrl = "http://localhost/evendorAPI/vendor.php";
+  private recipientUrl = "http://localhost/evendorAPI/recipient.php";
+  private token = this.auth.token;
+
+  constructor(private http: HttpClient, private auth: AuthService, private crud: CRUD) { }
+
+  ngOnInit() {
+    this.http.get<any>(this.url.vendors + '?token=' + this.token)
+    .subscribe(
+      result=>{
+        console.log(result)
+        this.vendors = result;
+      },
+      error=>{
+        console.log(error)
+      }
+    );
+
+    this.getRecipients();
+   
   }
+
+  getRecipients(){
+    this.http.get<Recipient[]>(this.url.recipients + '?token=' + this.token)
+    .subscribe(
+      result=>{
+        this.recipients = result;
+      },
+      error=>{
+        console.log(error)
+      }
+    );
+  }
+
+
+  ///////////////////////// Remove recipient
+
+  agreeToRemove(){
+    this.http.delete(this.url.recipient + '/' + this.agreeToRemoveData.id + '?token=' + this.token)
+      .subscribe(
+        result=>{
+          console.log(result)
+          if(result === 1){
+            this.recipients.splice(this.agreeToRemoveData.index, 1);
+            this.agreeToRemoveData = {};
+            this.modal.text2 = '';
+            this.modal.agreementDisplay = "none";
+          }else{
+            this.modal.text = "Couldn't remove recipient";
+            this.modal.errDisplay = "block";
+          }
+        },
+        error=>{
+          console.log(error)
+        }
+      );
+
+  }
+
+  removeRecipient(id, index){
+    this.agreeToRemoveData = {id: id, index: index};
+    console.log(this.agreeToRemoveData)
+    this.modal.text2 = this.recipients[index]['name'];
+    this.modal.agreementDisplay = "block";
+   }
+ 
+  ///////////////////////// End Of Remove recipient
+
+
+  ///////////////////////// Save new recipient or Update exist
 
   saveRecipient(data){
-    if(data.id !== undefined || data.id > 0){
-      console.log(data, this.editIndex);
-      this.recipients[this.editIndex] = data;
-      this.editIndex = undefined;
-      this.recipient = new Recipient("", "", "", this.dummyVendors);
-      this.flag = [];
+    if(data.id !== undefined || data.id > 0){//if id exist update recipient else create recipient
+      this.http.put(this.url.recipient + '/' + data.id + '?token=' + this.token, data)
+      .subscribe(
+        result=>{
+          if(result === true){
+            this.getRecipients();
+          }
+        },
+        error=>{
+          console.log(error);
+        }
+      );
+      
     }else{
-      this.recipients.push(data);//save to DB
-      this.recipient = new Recipient("", "", "", this.dummyVendors);
-      this.flag = [];
+      this.http.post(this.url.recipient + '?token=' + this.token, data)
+        .subscribe(
+          result=>{
+            if(result === true){
+               this.getRecipients();
+            }
+          },
+          error=>{
+            console.log(error);
+          }
+        );
+       this.recipient = new Recipient("", "", "", this.dummyVendors);
     }
     this.add = false;
     this.edit = false;
-    
   }
 
-  editRecipient(index){
-    window.scrollTo(0,0);
-    this.recipient = new Recipient(this.recipients[index]['name'],this.recipients[index]['email'], this.recipients[index]['phone'], this.recipients[index]['vendor'], this.recipients[index]['id']);
-    this.editIndex = index;
-    for(var r = 0; r < this.recipient.vendor.length; r++){
-      for(var i = 0; i < this.vendors.length; i++){
-        if(this.recipient.vendor[r]['id'] == this.vendors[i]['id']){
-          this.flag[i] = true;
-        }else{
-          this.flag[i] = false;
+
+
+  saveRecipient1(data){
+    console.log(data)
+    if(data.id !== undefined || data.id > 0){//if id exist update recipient else create recipient
+      this.crud.update(this.recipientUrl, data)
+      .subscribe(
+        result=>{
+          if(result === 1){
+            this.recipients[data.index] = data;
+            this.recipient = new Recipient("", "", "", this.dummyVendors);
+          }else{
+            this.modal.text = "Couldn't update recipient";
+            this.modal.errDisplay = "block";
+          }
+        },
+        error=>{
+          console.log(error);
         }
-        
-      }
+    );
+      
+    }else{
+      this.crud.create(this.recipientUrl, data)
+      .subscribe(result=>{
+        if(result !== 0 && result > 0){
+          data.id = result;
+          this.recipients.push(data);
+        }else{
+          this.modal.text = "Couldn't add recipient";
+          this.modal.errDisplay = "block";
+        }
+      });
+       this.recipient = new Recipient("", "", "", this.dummyVendors);
     }
-    this.edit = true;
     this.add = false;
+    this.edit = false;
   }
 
-  newRecipient(){
+   ///////////////////////// End of Save new recipient or Update exist
+
+   
+
+   ////////////////////////// Edit recipient
+
+
+   newRecipient(){// show add or edit window  ---edit button or --add new recipient button
     this.add = true;
     this.edit = false;
-    this.flag = [];
     this.recipient = new Recipient("", "", "", this.dummyVendors);
     for(var i = 0; i < this.vendors.length; i++){
       this.flag[i] = false;
     }
   }
 
-  cancel(){
+
+  editRecipient(name, email, phone, id, index){
+    window.scrollTo(0,0);
+    this.recipient = {name: name, email: email, phone: phone, id: id, index: index, vendors: this.recipients[index]['vendors']};
+    for(var i = 0; i < this.vendors.length; i++){
+      this.flag[i] = false;
+      if(this.recipient.vendors){
+        for(var r = 0; r < this.recipient.vendors.length; r++){
+          if(this.recipient.vendors[r]['id'] == this.vendors[i]['id']){
+            this.flag[i] = true;
+          }
+        }
+      }
+    }
+    this.edit = true;
+    this.add = false;
+  }
+
+   ////////////////////////// End of edit recipient
+
+
+
+  ////////////////////////// Cancel Create, Update recipient
+
+ cancel(){
     this.recipient = new Recipient("", "", "", this.dummyVendors);
     this.add = false;
     this.edit = false;
-    
   }
+
+  ////////////////////////// End of Cancel Create, Update recipient
 
 }
 

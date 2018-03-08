@@ -8,26 +8,40 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
   inputs: ['vendor']
 })
 export class ShowVendorComponent implements OnInit {
-  public showAddVendor: boolean;
+
+  public vendor;
+  
   constructor() { }
 
   ngOnInit() {
   }
 
   public editVendor: boolean = false;
+  public vendorName: string = '';
 
   @Output()
   remove: EventEmitter<object> = new EventEmitter();
 
-  removeVendor(){
-    this.remove.emit();
+  removeVendor(id, name){
+    this.remove.emit({id: id, name: name});
   }
 
   @Output()
   save: EventEmitter<object> = new EventEmitter();
 
   saveVendor(){
-    this.save.emit();
+    this.vendor.name = this.vendorName
+    this.save.emit({name: this.vendor.name, id: this.vendor.id});
     this.editVendor = false;
+  }
+
+  edit(name){
+    this.editVendor = true;
+    this.vendorName = name;
+  }
+
+  cancel(){
+    this.editVendor = false;
+    this.vendorName = '';
   }
 }

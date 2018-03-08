@@ -1,0 +1,41 @@
+.form-group{
+    margin-bottom: 0;
+}
+
+h4{
+    padding: 3rem 3rem 1rem 3rem;
+    color: #5288b5
+}
+
+
+p{
+    font-weight: 600;
+}
+
+.card-block{
+    padding: 0.25rem;
+}
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {}
+
+ /* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+
+
+ }
+
+ /* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+    
+    .card-block{
+        padding: 2rem;
+    }
+
+    h4{
+        padding: 5rem 3rem 2rem 3rem;
+    }
+
+}
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) { }

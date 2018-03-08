@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
-.alert{
+
+/* .alert{
     padding-bottom: 5px;
     padding-top: 5px;
     margin-bottom: 0;
@@ -14,4 +15,28 @@ input[type=number]::-webkit-outer-spin-button {
     -moz-appearance: none;
     appearance: none;
     margin: 0; 
+}
+.main-col{
+    height : 100vh;
+}
+.main, .main-col{
+    background-color: white;
+
+}
+
+button{
+    cursor: pointer;
+} */
+
+.vfluid{
+    height: 100vh;
+}
+
+.error-message{
+    padding: 0;
+    color: #e41313;
+}
+
+.error-input{
+    border-color: #e41313;
 }
